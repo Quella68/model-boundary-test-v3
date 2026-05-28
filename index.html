@@ -52,6 +52,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 .task-list { display: flex; flex-direction: column; gap: 6px; }
 .task-item { background: white; border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; cursor: pointer; border: 1px solid #f3f4f6; transition: all 0.15s; }
 .task-item:hover { border-color: #6366f1; box-shadow: 0 2px 8px rgba(99,102,241,0.1); }
+.task-item.evaluated { border-left: 3px solid #10b981; }
 .task-id { font-size: 12px; color: #9ca3af; width: 28px; font-weight: 600; }
 .task-type { font-size: 11px; padding: 3px 8px; border-radius: 4px; font-weight: 500; }
 .type-product { background: #fef3c7; color: #92400e; }
@@ -61,21 +62,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 .task-title { flex: 1; font-size: 13px; font-weight: 500; }
 .task-cap { font-size: 11px; color: #6366f1; background: #eef2ff; padding: 2px 8px; border-radius: 4px; }
 .task-lengths { font-size: 11px; color: #9ca3af; min-width: 180px; text-align: right; }
+.task-eval-badge { font-size: 10px; background: #d1fae5; color: #065f46; padding: 2px 6px; border-radius: 3px; }
 
-/* Compare */
-.compare-header { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
-.compare-select { padding: 8px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 13px; background: white; min-width: 280px; }
-.compare-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+/* Compare + Eval integrated */
+.compare-nav { display: flex; gap: 8px; margin-bottom: 16px; align-items: center; }
+.compare-nav select { padding: 8px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 13px; background: white; flex: 1; max-width: 350px; }
+.compare-nav button { padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 500; background: #f3f4f6; color: #374151; }
+.compare-nav button:hover { background: #e5e7eb; }
+
+.prompt-preview { background: white; border-radius: 10px; padding: 16px; margin-bottom: 16px; border: 1px solid #e5e7eb; max-height: 200px; overflow-y: auto; font-size: 13px; line-height: 1.7; white-space: pre-wrap; display: none; }
+.prompt-preview.show { display: block; }
+.prompt-toggle { font-size: 12px; cursor: pointer; color: #6366f1; margin-bottom: 12px; display: inline-block; }
+
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
 .model-col { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
 .model-col-header { padding: 12px 16px; font-weight: 600; font-size: 13px; color: white; display: flex; justify-content: space-between; align-items: center; }
 .col-glm .model-col-header { background: #6366f1; }
 .col-qwen .model-col-header { background: #f59e0b; color: #000; }
 .col-ernie .model-col-header { background: #ef4444; }
-.model-col-body { padding: 16px; flex: 1; max-height: 68vh; overflow-y: auto; font-size: 13px; line-height: 1.8; }
+.model-col-body { padding: 16px; flex: 1; max-height: 55vh; overflow-y: auto; font-size: 13px; line-height: 1.8; }
 .model-col-body h1,.model-col-body h2,.model-col-body h3 { margin: 14px 0 8px; }
-.model-col-body h1 { font-size: 17px; }
-.model-col-body h2 { font-size: 15px; }
-.model-col-body h3 { font-size: 13px; font-weight: 600; }
+.model-col-body h1 { font-size: 17px; } .model-col-body h2 { font-size: 15px; } .model-col-body h3 { font-size: 13px; font-weight: 600; }
 .model-col-body p { margin: 6px 0; }
 .model-col-body ul,.model-col-body ol { padding-left: 20px; margin: 6px 0; }
 .model-col-body li { margin: 3px 0; }
@@ -85,24 +92,44 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 .model-col-body blockquote { border-left: 3px solid #d1d5db; padding-left: 12px; color: #6b7280; margin: 8px 0; }
 .model-col-body code { background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
 .model-col-body pre { background: #f9fafb; padding: 10px; border-radius: 6px; overflow-x: auto; margin: 8px 0; }
-.model-col-footer { padding: 10px 16px; border-top: 1px solid #f3f4f6; font-size: 11px; color: #6b7280; background: #fafafa; display: flex; justify-content: space-between; align-items: center; }
+.model-col-footer { padding: 10px 16px; border-top: 1px solid #f3f4f6; font-size: 11px; color: #6b7280; background: #fafafa; display: flex; justify-content: space-between; }
 .thinking-toggle { font-size: 11px; padding: 3px 8px; border-radius: 4px; cursor: pointer; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
 .thinking-content { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 6px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #6b7280; max-height: 200px; overflow-y: auto; display: none; white-space: pre-wrap; }
 
-/* Eval */
-.eval-section { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.eval-section h3 { font-size: 14px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; }
-.eval-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid #f9fafb; }
-.eval-check-label { flex: 1; font-size: 13px; }
-.eval-btns { display: flex; gap: 4px; }
-.eval-btn { padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; border: 1px solid #e5e7eb; background: white; }
-.eval-btn.pass { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
-.eval-btn.fail { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+/* Inline eval in compare */
+.inline-eval { background: #fafafa; border-radius: 12px; padding: 20px; margin-top: 16px; }
+.inline-eval h4 { font-size: 13px; margin-bottom: 12px; color: #374151; }
+.eval-model-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.eval-model-card { padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; background: white; }
+.eval-model-card h5 { font-size: 12px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #f3f4f6; }
+.score-row { display: flex; align-items: center; gap: 6px; padding: 3px 0; }
+.score-row .dim-label { font-size: 11px; width: 70px; color: #6b7280; }
+.score-dot { width: 24px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 3px; font-size: 10px; cursor: pointer; border: 1px solid #d1d5db; background: white; color: #6b7280; transition: all 0.1s; }
+.score-dot:hover { background: #f3f4f6; }
+.score-dot.active { color: white; border-color: transparent; }
+
+.checkpoint-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 12px; }
+.checkpoint-label { flex: 1; color: #374151; }
+.ck-btn { padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; border: 1px solid #d1d5db; background: white; }
+.ck-btn.pass { background: #d1fae5; border-color: #6ee7b7; color: #065f46; }
+.ck-btn.fail { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+
+/* Leaderboard */
+.lb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.lb-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.lb-card h3 { font-size: 14px; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #f3f4f6; }
+.lb-table { width: 100%; font-size: 12px; }
+.lb-table th, .lb-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #f9fafb; }
+.lb-table th { color: #6b7280; font-weight: 600; }
+.lb-rank { font-weight: 700; font-size: 14px; }
+.lb-bar { height: 6px; border-radius: 3px; margin-top: 3px; }
 
 @media (max-width: 1200px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .compare-grid { grid-template-columns: 1fr; }
+  .eval-model-row { grid-template-columns: 1fr; }
   .charts-row { grid-template-columns: 1fr; }
+  .lb-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -111,7 +138,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 <div class="header">
   <div>
     <h1>模型边界测试工作台 V3</h1>
-    <div class="subtitle">精准能力边界测试 · 50题 · 10大维度 · 二元评估</div>
+    <div class="subtitle">精准能力边界测试 · 50题 · 10大维度 · 两层评估体系</div>
   </div>
   <div class="models">
     <span class="model-badge badge-glm">GLM-5.1</span>
@@ -123,12 +150,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 <div class="nav">
   <div class="nav-item active" onclick="switchPanel('overview')">总览</div>
   <div class="nav-item" onclick="switchPanel('tasks')">题目列表</div>
-  <div class="nav-item" onclick="switchPanel('compare')">对比阅读</div>
-  <div class="nav-item" onclick="switchPanel('eval')">评估打分</div>
+  <div class="nav-item" onclick="switchPanel('compare')">对比 & 评分</div>
+  <div class="nav-item" onclick="switchPanel('leaderboard')">评分榜单</div>
 </div>
 
 <div class="container">
-  <!-- Overview Panel -->
+  <!-- Overview -->
   <div class="panel active" id="panel-overview">
     <div class="stats-grid" id="stats-grid"></div>
     <div class="charts-row">
@@ -136,12 +163,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
       <div class="chart-card"><h3>能力维度覆盖分布</h3><div class="chart-container" id="chart-capability"></div></div>
     </div>
     <div class="charts-row">
-      <div class="chart-card"><h3>各模型响应时间分布</h3><div class="chart-container" id="chart-time"></div></div>
-      <div class="chart-card"><h3>输出长度对比（逐题）</h3><div class="chart-container" id="chart-per-task"></div></div>
+      <div class="chart-card"><h3>各模型响应时间</h3><div class="chart-container" id="chart-time"></div></div>
+      <div class="chart-card"><h3>输出长度逐题对比</h3><div class="chart-container" id="chart-per-task"></div></div>
     </div>
   </div>
 
-  <!-- Tasks Panel -->
+  <!-- Tasks -->
   <div class="panel" id="panel-tasks">
     <div class="toolbar">
       <div class="filter-chip active" onclick="filterTasks('all')">全部</div>
@@ -149,46 +176,39 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
       <div class="filter-chip" onclick="filterTasks('内容')">内容/创意</div>
       <div class="filter-chip" onclick="filterTasks('教育')">教育/知识</div>
       <div class="filter-chip" onclick="filterTasks('商业')">商业/战略</div>
-      <input class="search-input" placeholder="搜索题目..." oninput="searchTasks(this.value)">
+      <input class="search-input" placeholder="搜索题目或维度..." oninput="searchTasks(this.value)">
     </div>
     <div class="task-list" id="task-list"></div>
   </div>
 
-  <!-- Compare Panel -->
+  <!-- Compare & Eval (integrated) -->
   <div class="panel" id="panel-compare">
-    <div class="compare-header">
-      <select class="compare-select" id="compare-select" onchange="loadCompare(this.value)">
-        <option value="">选择题目...</option>
-      </select>
+    <div class="compare-nav">
+      <select id="compare-select" onchange="loadCompare(this.value)"><option value="">选择题目...</option></select>
+      <button onclick="prevTask()">← 上一题</button>
+      <button onclick="nextTask()">下一题 →</button>
+      <button onclick="togglePrompt()">显示/隐藏原题</button>
     </div>
+    <div class="prompt-preview" id="prompt-preview"></div>
     <div id="compare-eval-points" style="margin-bottom:12px;"></div>
     <div class="compare-grid" id="compare-grid"></div>
+    <!-- Inline evaluation -->
+    <div class="inline-eval" id="inline-eval"></div>
   </div>
 
-  <!-- Eval Panel -->
-  <div class="panel" id="panel-eval">
-    <div class="eval-section">
-      <h3>评估总览</h3>
-      <div id="eval-progress"></div>
+  <!-- Leaderboard -->
+  <div class="panel" id="panel-leaderboard">
+    <div class="lb-grid">
+      <div class="lb-card"><h3>综合得分排行</h3><div id="lb-overall"></div></div>
+      <div class="lb-card"><h3>7维度雷达图对比</h3><div id="lb-radar" style="height:350px;"></div></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-      <div class="eval-section">
-        <h3>逐题评估</h3>
-        <div class="compare-header">
-          <select class="compare-select" id="eval-select" onchange="loadEval(this.value)"></select>
-        </div>
-        <div id="eval-content"></div>
-      </div>
-      <div class="eval-section">
-        <h3>当前题目 · 雷达图对比</h3>
-        <div id="eval-radar" style="width:100%;height:360px;"></div>
-        <div style="margin-top:12px;padding:12px;background:#f9fafb;border-radius:8px;font-size:11px;color:#6b7280;">
-          <strong>评分说明：</strong><br>
-          F1 指令遵循 · F2 内容一致性 · F3 实操可用性 · F4 信息密度<br>
-          F5 诚实与边界感 · F6 独立思考 · F7 表达质量<br>
-          每项1-5分，5分最优。打分后雷达图实时更新。
-        </div>
-      </div>
+    <div class="lb-grid" style="margin-top:20px;">
+      <div class="lb-card"><h3>各维度得分明细</h3><div id="lb-dimensions"></div></div>
+      <div class="lb-card"><h3>数据导出</h3><div id="lb-export">
+        <p style="font-size:13px;color:#6b7280;margin-bottom:12px;">导出所有评分数据用于进一步分析</p>
+        <button onclick="exportJSON()" style="padding:10px 20px;background:#6366f1;color:white;border:none;border-radius:8px;cursor:pointer;margin-right:8px;">导出 JSON</button>
+        <button onclick="exportCSV()" style="padding:10px 20px;background:#10b981;color:white;border:none;border-radius:8px;cursor:pointer;">导出 CSV</button>
+      </div></div>
     </div>
   </div>
 </div>
@@ -197,331 +217,338 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 const DATA = V3_DATA;
 const MODELS = Object.keys(DATA.models);
 const MODEL_COLORS = { 'glm5.1': '#6366f1', 'qwen3.5': '#f59e0b', 'ernie5.1': '#ef4444' };
+const UNIVERSAL_CRITERIA = [
+  { id: 'F1', name: '指令遵循', tip: '是否完整执行了prompt中的所有显式要求' },
+  { id: 'F2', name: '一致性', tip: '输出内部是否前后一致、不自相矛盾' },
+  { id: 'F3', name: '实操性', tip: '能否被真实场景的人直接采纳使用' },
+  { id: 'F4', name: '信息密度', tip: '有效信息占比，是否精炼不注水' },
+  { id: 'F5', name: '诚实度', tip: '不确定时是否承认，是否区分事实和推测' },
+  { id: 'F6', name: '独立思考', tip: '是否有非模板化的独立见解' },
+  { id: 'F7', name: '表达质量', tip: '结构清晰度、可读性、专业度' },
+];
 
-// Load/save eval scores
-function getEvalScores() {
-  try { return JSON.parse(localStorage.getItem('v3_eval_scores') || '{}'); } catch(e) { return {}; }
-}
-function saveEvalScores(scores) {
-  localStorage.setItem('v3_eval_scores', JSON.stringify(scores));
-}
+function getScores() { try { return JSON.parse(localStorage.getItem('v3_eval_scores')||'{}'); } catch(e) { return {}; } }
+function saveScores(s) { localStorage.setItem('v3_eval_scores', JSON.stringify(s)); }
 
 function switchPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
   event.target.classList.add('active');
-  if (name === 'overview') renderOverview();
+  if (name==='overview') renderOverview();
+  if (name==='leaderboard') renderLeaderboard();
+  if (name==='tasks') renderTasks('all');
 }
 
 function getTypeClass(type) {
-  if (type.includes('产品') || type.includes('数据')) return 'type-product';
+  if (type.includes('产品')||type.includes('数据')) return 'type-product';
   if (type.includes('内容')) return 'type-content';
   if (type.includes('教育')) return 'type-edu';
   if (type.includes('商业')) return 'type-biz';
   return '';
 }
 
-// Overview
+// ===== Overview =====
 function renderOverview() {
   const grid = document.getElementById('stats-grid');
-  const cards = [
-    { label: '测试题数', value: '50', sub: '4领域×10维度' },
-    { label: 'GLM-5.1 均长', value: DATA.stats['glm5.1'].avg_length + '字', sub: '均耗时 ' + DATA.stats['glm5.1'].avg_time + 's' },
-    { label: 'Qwen3.5 均长', value: DATA.stats['qwen3.5'].avg_length + '字', sub: '均耗时 ' + DATA.stats['qwen3.5'].avg_time + 's' },
-    { label: '文心5.1 均长', value: DATA.stats['ernie5.1'].avg_length + '字', sub: '均耗时 ' + DATA.stats['ernie5.1'].avg_time + 's' },
-  ];
-  grid.innerHTML = cards.map(c => `<div class="stat-card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`).join('');
-
+  grid.innerHTML = [
+    { label: '测试题数', value: '50', sub: '4领域 × 10维度' },
+    { label: 'GLM-5.1', value: DATA.stats['glm5.1'].avg_length+'字', sub: '均耗时'+DATA.stats['glm5.1'].avg_time+'s' },
+    { label: 'Qwen3.5-397B', value: DATA.stats['qwen3.5'].avg_length+'字', sub: '均耗时'+DATA.stats['qwen3.5'].avg_time+'s' },
+    { label: '文心5.1', value: DATA.stats['ernie5.1'].avg_length+'字', sub: '均耗时'+DATA.stats['ernie5.1'].avg_time+'s' },
+  ].map(c=>`<div class="stat-card"><div class="label">${c.label}</div><div class="value">${c.value}</div><div class="sub">${c.sub}</div></div>`).join('');
   renderCharts();
 }
 
 function renderCharts() {
-  // Chart 1: Length by domain
-  const domains = ['产品', '内容', '教育', '商业'];
+  const domains = ['产品','内容','教育','商业'];
   const lengthData = {};
-  MODELS.forEach(m => { lengthData[m] = [0,0,0,0]; const counts = [0,0,0,0];
-    Object.entries(DATA.results[m]).forEach(([tid, r]) => {
-      const type = DATA.prompts[tid].type;
-      const di = domains.findIndex(d => type.includes(d));
-      if (di >= 0) { lengthData[m][di] += r.content_length; counts[di]++; }
+  MODELS.forEach(m => { lengthData[m]=[0,0,0,0]; const counts=[0,0,0,0];
+    Object.entries(DATA.results[m]).forEach(([tid,r])=>{
+      const di=domains.findIndex(d=>DATA.prompts[tid].type.includes(d));
+      if(di>=0){lengthData[m][di]+=r.content_length;counts[di]++;}
     });
-    lengthData[m] = lengthData[m].map((v, i) => counts[i] ? Math.round(v/counts[i]) : 0);
+    lengthData[m]=lengthData[m].map((v,i)=>counts[i]?Math.round(v/counts[i]):0);
   });
-
-  const chart1 = echarts.init(document.getElementById('chart-length'));
-  chart1.setOption({
-    tooltip: { trigger: 'axis' },
-    legend: { data: MODELS.map(m => DATA.models[m]) },
-    xAxis: { type: 'category', data: ['产品/增长', '内容/创意', '教育/知识', '商业/战略'] },
-    yAxis: { type: 'value', name: '字数' },
-    series: MODELS.map(m => ({ name: DATA.models[m], type: 'bar', data: lengthData[m], itemStyle: { color: MODEL_COLORS[m] } }))
+  echarts.init(document.getElementById('chart-length')).setOption({
+    tooltip:{trigger:'axis'},legend:{data:MODELS.map(m=>DATA.models[m])},
+    xAxis:{type:'category',data:['产品/增长','内容/创意','教育/知识','商业/战略']},
+    yAxis:{type:'value',name:'字数'},
+    series:MODELS.map(m=>({name:DATA.models[m],type:'bar',data:lengthData[m],itemStyle:{color:MODEL_COLORS[m]}}))
   });
-
-  // Chart 2: Capability distribution
-  const capCounts = {};
-  Object.values(DATA.prompts).forEach(p => {
-    const cap = p.capability.split('-')[0];
-    capCounts[cap] = (capCounts[cap] || 0) + 1;
+  const capCounts={};
+  Object.values(DATA.prompts).forEach(p=>{const c=p.capability.split('-')[0];capCounts[c]=(capCounts[c]||0)+1;});
+  echarts.init(document.getElementById('chart-capability')).setOption({
+    tooltip:{trigger:'item'},
+    series:[{type:'pie',radius:['35%','65%'],data:Object.entries(capCounts).map(([k,v])=>({name:k,value:v})),label:{formatter:'{b}:{c}题'}}]
   });
-  const chart2 = echarts.init(document.getElementById('chart-capability'));
-  chart2.setOption({
-    tooltip: { trigger: 'item' },
-    series: [{ type: 'pie', radius: ['35%', '65%'], data: Object.entries(capCounts).map(([k, v]) => ({ name: k, value: v })), label: { formatter: '{b}: {c}题' } }]
+  echarts.init(document.getElementById('chart-time')).setOption({
+    tooltip:{trigger:'axis'},legend:{data:MODELS.map(m=>DATA.models[m])},
+    xAxis:{type:'category',data:Array.from({length:50},(_,i)=>i+1)},yAxis:{type:'value',name:'秒'},
+    series:MODELS.map(m=>({name:DATA.models[m],type:'line',data:Object.values(DATA.results[m]).map(r=>r.elapsed_seconds),smooth:true,lineStyle:{color:MODEL_COLORS[m]},itemStyle:{color:MODEL_COLORS[m]}}))
   });
-
-  // Chart 3: Time distribution
-  const timeData = {};
-  MODELS.forEach(m => { timeData[m] = Object.values(DATA.results[m]).map(r => r.elapsed_seconds); });
-  const chart3 = echarts.init(document.getElementById('chart-time'));
-  chart3.setOption({
-    tooltip: { trigger: 'axis' },
-    legend: { data: MODELS.map(m => DATA.models[m]) },
-    xAxis: { type: 'category', data: Array.from({length:50}, (_,i) => i+1) },
-    yAxis: { type: 'value', name: '秒' },
-    series: MODELS.map(m => ({ name: DATA.models[m], type: 'line', data: timeData[m], smooth: true, lineStyle: { color: MODEL_COLORS[m] }, itemStyle: { color: MODEL_COLORS[m] } }))
-  });
-
-  // Chart 4: Per-task length
-  const chart4 = echarts.init(document.getElementById('chart-per-task'));
-  chart4.setOption({
-    tooltip: { trigger: 'axis' },
-    legend: { data: MODELS.map(m => DATA.models[m]) },
-    xAxis: { type: 'category', data: Array.from({length:50}, (_,i) => i+1) },
-    yAxis: { type: 'value', name: '字数' },
-    series: MODELS.map(m => ({ name: DATA.models[m], type: 'bar', stack: 'total', data: Object.values(DATA.results[m]).map(r => r.content_length), itemStyle: { color: MODEL_COLORS[m] } }))
+  echarts.init(document.getElementById('chart-per-task')).setOption({
+    tooltip:{trigger:'axis'},legend:{data:MODELS.map(m=>DATA.models[m])},
+    xAxis:{type:'category',data:Array.from({length:50},(_,i)=>i+1)},yAxis:{type:'value',name:'字数'},
+    series:MODELS.map(m=>({name:DATA.models[m],type:'bar',data:Object.values(DATA.results[m]).map(r=>r.content_length),itemStyle:{color:MODEL_COLORS[m]}}))
   });
 }
 
-// Tasks
+// ===== Tasks =====
+function isTaskEvaluated(tid) {
+  const s = getScores();
+  return MODELS.some(m => s[`L1_${tid}_${m}_F1`] > 0);
+}
+
 function renderTasks(filter, search) {
   const list = document.getElementById('task-list');
   let html = '';
-  for (let i = 1; i <= 50; i++) {
+  for (let i=1;i<=50;i++) {
     const p = DATA.prompts[String(i)];
-    if (filter && filter !== 'all' && !p.type.includes(filter)) continue;
-    if (search && !p.title.includes(search) && !p.capability.includes(search)) continue;
-    const lengths = MODELS.map(m => {
-      const r = DATA.results[m][String(i)];
-      return r ? r.content_length : 0;
-    });
-    html += `<div class="task-item" onclick="goCompare(${i})">
+    if (filter&&filter!=='all'&&!p.type.includes(filter)) continue;
+    if (search&&!p.title.includes(search)&&!p.capability.includes(search)) continue;
+    const evaluated = isTaskEvaluated(i);
+    const lengths = MODELS.map(m=>(DATA.results[m][String(i)]||{}).content_length||0);
+    html += `<div class="task-item ${evaluated?'evaluated':''}" onclick="goCompare(${i})">
       <span class="task-id">${i}</span>
       <span class="task-type ${getTypeClass(p.type)}">${p.type}</span>
       <span class="task-title">${p.title}</span>
       <span class="task-cap">${p.capability.split('-')[0]}</span>
+      ${evaluated?'<span class="task-eval-badge">已评</span>':''}
       <span class="task-lengths">G:${lengths[0]} Q:${lengths[1]} E:${lengths[2]}</span>
     </div>`;
   }
   list.innerHTML = html;
 }
-
-function filterTasks(f) {
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  event.target.classList.add('active');
-  renderTasks(f);
-}
-function searchTasks(q) { renderTasks('all', q); }
-
-function goCompare(id) {
+function filterTasks(f){document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));event.target.classList.add('active');renderTasks(f);}
+function searchTasks(q){renderTasks('all',q);}
+function goCompare(id){
   switchPanel('compare');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.querySelectorAll('.nav-item')[2].classList.add('active');
-  document.getElementById('compare-select').value = id;
+  document.getElementById('compare-select').value=id;
   loadCompare(id);
 }
 
-// Compare
+// ===== Compare & Eval =====
+function prevTask(){const sel=document.getElementById('compare-select');const v=parseInt(sel.value)||1;if(v>1){sel.value=v-1;loadCompare(v-1);}}
+function nextTask(){const sel=document.getElementById('compare-select');const v=parseInt(sel.value)||0;if(v<50){sel.value=v+1;loadCompare(v+1);}}
+function togglePrompt(){document.getElementById('prompt-preview').classList.toggle('show');}
+
 function loadCompare(tid) {
   if (!tid) return;
-  const grid = document.getElementById('compare-grid');
-  const evalDiv = document.getElementById('compare-eval-points');
   const p = DATA.prompts[String(tid)];
-
-  // Show eval points
   const eps = DATA.eval_points[String(tid)] || [];
-  evalDiv.innerHTML = `<div style="font-size:12px;color:#6b7280;margin-bottom:8px;">
-    <strong>${p.title}</strong> · ${p.capability} · 评估检查点：</div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;">${eps.map(e => `<span style="font-size:11px;background:#eef2ff;color:#4338ca;padding:3px 8px;border-radius:4px;">${e}</span>`).join('')}</div>`;
 
-  const cols = ['glm5.1', 'qwen3.5', 'ernie5.1'];
-  const colClass = ['col-glm', 'col-qwen', 'col-ernie'];
-  grid.innerHTML = cols.map((m, idx) => {
-    const r = DATA.results[m][String(tid)];
-    if (!r) return `<div class="model-col ${colClass[idx]}"><div class="model-col-header">${DATA.models[m]}</div><div class="model-col-body">暂无数据</div></div>`;
-    const hasThinking = r.reasoning_content && r.reasoning_content.length > 0;
-    return `<div class="model-col ${colClass[idx]}">
-      <div class="model-col-header"><span>${DATA.models[m]}</span><span>${r.content_length}字 / ${r.elapsed_seconds}s</span></div>
+  // Prompt preview
+  document.getElementById('prompt-preview').textContent = p.prompt || '(prompt未加载)';
+
+  // Eval points badges
+  document.getElementById('compare-eval-points').innerHTML = `<div style="font-size:12px;color:#6b7280;margin-bottom:4px;"><strong>[${tid}] ${p.title}</strong> · ${p.capability}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;">${eps.map(e=>`<span style="font-size:11px;background:#eef2ff;color:#4338ca;padding:3px 8px;border-radius:4px;">${e}</span>`).join('')}</div>`;
+
+  // Model columns
+  const cols=['glm5.1','qwen3.5','ernie5.1'], colCls=['col-glm','col-qwen','col-ernie'];
+  document.getElementById('compare-grid').innerHTML = cols.map((m,idx)=>{
+    const r=DATA.results[m][String(tid)];
+    if(!r) return `<div class="model-col ${colCls[idx]}"><div class="model-col-header">${DATA.models[m]}</div><div class="model-col-body">暂无数据</div></div>`;
+    const hasT=r.reasoning_content&&r.reasoning_content.length>0;
+    return `<div class="model-col ${colCls[idx]}">
+      <div class="model-col-header"><span>${DATA.models[m]}</span><span>${r.content_length}字/${r.elapsed_seconds}s</span></div>
       <div class="model-col-body">
-        ${hasThinking ? `<div class="thinking-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">💭 思考过程 (${r.reasoning_content.length}字)</div><div class="thinking-content">${escapeHtml(r.reasoning_content)}</div>` : ''}
+        ${hasT?`<div class="thinking-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">💭 思考 (${r.reasoning_content.length}字)</div><div class="thinking-content">${esc(r.reasoning_content)}</div>`:''}
         ${renderMd(r.content)}
       </div>
-      <div class="model-col-footer"><span>Tokens: ${r.usage.total_tokens || '-'}</span><span>${r.finish_reason}</span></div>
+      <div class="model-col-footer"><span>Tokens:${r.usage.total_tokens||'-'}</span><span>${r.finish_reason}</span></div>
     </div>`;
   }).join('');
+
+  // Inline eval
+  renderInlineEval(tid, eps);
 }
 
-function renderMd(text) {
-  try { return marked.parse(text); } catch(e) { return '<pre>' + escapeHtml(text) + '</pre>'; }
-}
-function escapeHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderInlineEval(tid, eps) {
+  const scores = getScores();
+  const cols=['glm5.1','qwen3.5','ernie5.1'];
+  let html = '<h4>评分面板</h4>';
 
-// Eval
-const UNIVERSAL_CRITERIA = [
-  { id: 'F1', name: '指令遵循', tip: '是否完整执行了prompt中的所有显式要求' },
-  { id: 'F2', name: '内容一致性', tip: '输出内部是否前后一致、不自相矛盾' },
-  { id: 'F3', name: '实操可用性', tip: '输出能否被真实场景的人直接采纳使用' },
-  { id: 'F4', name: '信息密度', tip: '有效信息占比，是否精炼不注水' },
-  { id: 'F5', name: '诚实与边界感', tip: '不确定时是否承认，是否区分事实和推测' },
-  { id: 'F6', name: '独立思考', tip: '是否有非模板化的独立见解' },
-  { id: 'F7', name: '表达质量', tip: '结构清晰度、可读性、专业度' },
-];
-
-function loadEval(tid) {
-  if (!tid) return;
-  const eps = DATA.eval_points[String(tid)] || [];
-  const scores = getEvalScores();
-  const content = document.getElementById('eval-content');
-
-  let html = '';
-  MODELS.forEach(m => {
-    html += `<div class="eval-model-block" style="margin-bottom:24px;padding:16px;background:#fafafa;border-radius:10px;border-left:4px solid ${MODEL_COLORS[m]}">`;
-    html += `<h4 style="margin:0 0 12px;color:${MODEL_COLORS[m]};font-size:14px;">${DATA.models[m]}</h4>`;
-
-    // Layer 1: Universal dimensions (1-5 scoring)
-    html += `<div style="margin-bottom:14px;"><div style="font-size:12px;color:#6b7280;margin-bottom:8px;font-weight:600;">Layer 1: 通用质量维度（1-5分）</div>`;
+  // Layer 1: Universal (3 columns)
+  html += '<div style="font-size:11px;color:#6b7280;margin:8px 0 6px;font-weight:600;">Layer 1: 通用质量维度 (1-5分)</div>';
+  html += '<div class="eval-model-row">';
+  cols.forEach(m => {
+    html += `<div class="eval-model-card"><h5 style="color:${MODEL_COLORS[m]}">${DATA.models[m]}</h5>`;
     UNIVERSAL_CRITERIA.forEach(c => {
-      const key = `L1_${tid}_${m}_${c.id}`;
-      const val = scores[key] || 0;
-      html += `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;">
-        <span style="font-size:12px;width:90px;font-weight:500;" title="${c.tip}">${c.id} ${c.name}</span>
-        <div style="display:flex;gap:3px;">`;
-      for (let s = 1; s <= 5; s++) {
-        const active = val == s;
-        html += `<span class="score-dot ${active?'score-active':''}" style="width:28px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid ${active?MODEL_COLORS[m]:'#d1d5db'};background:${active?MODEL_COLORS[m]:'white'};color:${active?'white':'#6b7280'};" onclick="setScore('${key}',${s})">${s}</span>`;
+      const key=`L1_${tid}_${m}_${c.id}`;
+      const val=scores[key]||0;
+      html += `<div class="score-row"><span class="dim-label" title="${c.tip}">${c.name}</span>`;
+      for(let s=1;s<=5;s++){
+        html+=`<span class="score-dot ${val==s?'active':''}" style="${val==s?'background:'+MODEL_COLORS[m]+';border-color:'+MODEL_COLORS[m]:''}" onclick="setL1('${key}',${s},'${tid}')">${s}</span>`;
       }
-      html += `</div></div>`;
+      html += '</div>';
     });
-    html += `</div>`;
+    html += '</div>';
+  });
+  html += '</div>';
 
-    // Layer 2: Task-specific checkpoints (pass/fail)
-    html += `<div><div style="font-size:12px;color:#6b7280;margin-bottom:8px;font-weight:600;">Layer 2: 任务检查点（Pass/Fail）</div>`;
+  // Layer 2: Task checkpoints (3 columns)
+  html += '<div style="font-size:11px;color:#6b7280;margin:12px 0 6px;font-weight:600;">Layer 2: 任务检查点 (Pass/Fail)</div>';
+  html += '<div class="eval-model-row">';
+  cols.forEach(m => {
+    html += `<div class="eval-model-card"><h5 style="color:${MODEL_COLORS[m]}">${DATA.models[m]}</h5>`;
     eps.forEach((ep, idx) => {
-      const key = `L2_${tid}_${m}_${idx}`;
-      const val = scores[key] || '';
-      html += `<div class="eval-item">
-        <span class="eval-check-label">${ep}</span>
-        <div class="eval-btns">
-          <span class="eval-btn ${val==='pass'?'pass':''}" onclick="setEval('${key}','pass',this)">✓</span>
-          <span class="eval-btn ${val==='fail'?'fail':''}" onclick="setEval('${key}','fail',this)">✗</span>
-        </div>
-      </div>`;
+      const key=`L2_${tid}_${m}_${idx}`;
+      const val=scores[key]||'';
+      html += `<div class="checkpoint-row"><span class="checkpoint-label">${ep}</span>
+        <span class="ck-btn ${val==='pass'?'pass':''}" onclick="setL2('${key}','pass','${tid}')">✓</span>
+        <span class="ck-btn ${val==='fail'?'fail':''}" onclick="setL2('${key}','fail','${tid}')">✗</span></div>`;
     });
-    html += `</div>`;
-
-    // Show computed score
-    const l1scores = UNIVERSAL_CRITERIA.map(c => scores[`L1_${tid}_${m}_${c.id}`] || 0);
-    const l1avg = l1scores.filter(s=>s>0).length > 0 ? (l1scores.reduce((a,b)=>a+b,0) / l1scores.filter(s=>s>0).length).toFixed(1) : '-';
-    const l2pass = eps.filter((_, idx) => scores[`L2_${tid}_${m}_${idx}`] === 'pass').length;
-    const l2total = eps.length;
-    html += `<div style="margin-top:10px;padding:8px 12px;background:white;border-radius:6px;font-size:12px;display:flex;gap:16px;">
-      <span>L1均分: <strong>${l1avg}</strong>/5</span>
-      <span>L2通过: <strong>${l2pass}/${l2total}</strong></span>
-    </div>`;
-
-    html += `</div>`;
+    html += '</div>';
   });
+  html += '</div>';
 
-  content.innerHTML = html;
-  renderRadarChart(tid);
+  document.getElementById('inline-eval').innerHTML = html;
 }
 
-function setScore(key, val) {
-  const scores = getEvalScores();
-  scores[key] = val;
-  saveEvalScores(scores);
-  const tid = document.getElementById('eval-select').value;
-  loadEval(tid);
-}
+function setL1(key, val, tid) { const s=getScores(); s[key]=val; saveScores(s); loadCompare(tid); }
+function setL2(key, val, tid) { const s=getScores(); s[key]=val; saveScores(s); loadCompare(tid); }
 
-function setEval(key, val, el) {
-  const scores = getEvalScores();
-  scores[key] = val;
-  saveEvalScores(scores);
-  el.parentElement.querySelectorAll('.eval-btn').forEach(b => { b.classList.remove('pass','fail'); });
-  el.classList.add(val);
-  const tid = document.getElementById('eval-select').value;
-  renderRadarChart(tid);
-  updateEvalProgress();
-}
+// ===== Leaderboard =====
+function renderLeaderboard() {
+  const scores = getScores();
 
-function renderRadarChart(tid) {
-  const scores = getEvalScores();
-  const chartDom = document.getElementById('eval-radar');
-  if (!chartDom) return;
-  const chart = echarts.init(chartDom);
-
-  const indicator = UNIVERSAL_CRITERIA.map(c => ({ name: c.name, max: 5 }));
-  const series = MODELS.map(m => {
-    const values = UNIVERSAL_CRITERIA.map(c => scores[`L1_${tid}_${m}_${c.id}`] || 0);
-    return { value: values, name: DATA.models[m], lineStyle: { color: MODEL_COLORS[m] }, itemStyle: { color: MODEL_COLORS[m] }, areaStyle: { color: MODEL_COLORS[m], opacity: 0.1 } };
-  });
-
-  chart.setOption({
-    tooltip: {},
-    legend: { data: MODELS.map(m => DATA.models[m]), bottom: 0 },
-    radar: { indicator, radius: '65%' },
-    series: [{ type: 'radar', data: series }]
-  });
-}
-
-function updateEvalProgress() {
-  const scores = getEvalScores();
-  const l1Total = 50 * MODELS.length * 7;
-  const l2Total = 50 * MODELS.length * 4;
-  const l1Done = Object.keys(scores).filter(k => k.startsWith('L1_') && scores[k] > 0).length;
-  const l2Done = Object.keys(scores).filter(k => k.startsWith('L2_')).length;
-
-  // Compute overall model averages
-  let summaryHtml = `<div style="font-size:13px;margin-bottom:12px;">评估进度: L1 ${l1Done}/${l1Total} | L2 ${l2Done}/${l2Total}</div>`;
-  summaryHtml += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">';
+  // Compute per-model averages
+  const modelScores = {};
   MODELS.forEach(m => {
-    const l1vals = [];
-    for (let t = 1; t <= 50; t++) {
+    const dimScores = {};
+    UNIVERSAL_CRITERIA.forEach(c => { dimScores[c.id] = []; });
+    let l2pass=0, l2total=0;
+    for (let t=1;t<=50;t++) {
       UNIVERSAL_CRITERIA.forEach(c => {
         const v = scores[`L1_${t}_${m}_${c.id}`];
-        if (v && v > 0) l1vals.push(v);
+        if (v && v > 0) dimScores[c.id].push(v);
+      });
+      const eps = DATA.eval_points[String(t)] || [];
+      eps.forEach((_,idx) => {
+        const v = scores[`L2_${t}_${m}_${idx}`];
+        if (v) { l2total++; if (v==='pass') l2pass++; }
       });
     }
-    const avg = l1vals.length > 0 ? (l1vals.reduce((a,b)=>a+b,0)/l1vals.length).toFixed(2) : '-';
-    summaryHtml += `<div style="text-align:center;padding:10px;background:white;border-radius:8px;border-top:3px solid ${MODEL_COLORS[m]}">
-      <div style="font-size:11px;color:#6b7280;">${DATA.models[m]}</div>
-      <div style="font-size:20px;font-weight:700;">${avg}</div>
-      <div style="font-size:10px;color:#9ca3af;">L1均分 (已评${l1vals.length}项)</div>
-    </div>`;
+    const dimAvgs = {};
+    let totalAvg = 0, dimCount = 0;
+    UNIVERSAL_CRITERIA.forEach(c => {
+      const arr = dimScores[c.id];
+      dimAvgs[c.id] = arr.length > 0 ? (arr.reduce((a,b)=>a+b,0)/arr.length) : 0;
+      if (dimAvgs[c.id] > 0) { totalAvg += dimAvgs[c.id]; dimCount++; }
+    });
+    const l1avg = dimCount > 0 ? totalAvg / dimCount : 0;
+    const l2rate = l2total > 0 ? l2pass / l2total : 0;
+    const composite = l1avg * 0.6 + l2rate * 5 * 0.4;
+    modelScores[m] = { dimAvgs, l1avg, l2rate, l2pass, l2total, composite, evaluated: dimCount > 0 };
   });
-  summaryHtml += '</div>';
-  document.getElementById('eval-progress').innerHTML = summaryHtml;
+
+  // Overall ranking
+  const ranked = MODELS.slice().sort((a,b) => modelScores[b].composite - modelScores[a].composite);
+  let overallHtml = '<table class="lb-table"><tr><th>#</th><th>模型</th><th>L1均分</th><th>L2通过率</th><th>综合</th></tr>';
+  ranked.forEach((m, i) => {
+    const ms = modelScores[m];
+    if (!ms.evaluated) {
+      overallHtml += `<tr><td>${i+1}</td><td>${DATA.models[m]}</td><td colspan="3" style="color:#9ca3af;">暂无评分数据</td></tr>`;
+    } else {
+      overallHtml += `<tr><td class="lb-rank">${i+1}</td><td style="color:${MODEL_COLORS[m]};font-weight:600;">${DATA.models[m]}</td>
+        <td>${ms.l1avg.toFixed(2)}/5</td><td>${ms.l2pass}/${ms.l2total} (${(ms.l2rate*100).toFixed(0)}%)</td>
+        <td><strong>${ms.composite.toFixed(2)}</strong></td></tr>`;
+    }
+  });
+  overallHtml += '</table>';
+  if (!modelScores[MODELS[0]].evaluated) {
+    overallHtml += '<p style="margin-top:12px;font-size:12px;color:#9ca3af;">还没有评分数据。请在"对比&评分"面板中进行评分。</p>';
+  }
+  document.getElementById('lb-overall').innerHTML = overallHtml;
+
+  // Radar chart
+  const radarChart = echarts.init(document.getElementById('lb-radar'));
+  radarChart.setOption({
+    tooltip:{},
+    legend:{data:MODELS.map(m=>DATA.models[m]),bottom:0},
+    radar:{indicator:UNIVERSAL_CRITERIA.map(c=>({name:c.name,max:5})),radius:'60%'},
+    series:[{type:'radar',data:MODELS.map(m=>({
+      value:UNIVERSAL_CRITERIA.map(c=>modelScores[m].dimAvgs[c.id]||0),
+      name:DATA.models[m],
+      lineStyle:{color:MODEL_COLORS[m]},itemStyle:{color:MODEL_COLORS[m]},
+      areaStyle:{color:MODEL_COLORS[m],opacity:0.1}
+    }))}]
+  });
+
+  // Dimension details
+  let dimHtml = '<table class="lb-table"><tr><th>维度</th>';
+  MODELS.forEach(m => { dimHtml += `<th style="color:${MODEL_COLORS[m]}">${DATA.models[m]}</th>`; });
+  dimHtml += '</tr>';
+  UNIVERSAL_CRITERIA.forEach(c => {
+    dimHtml += `<tr><td>${c.id} ${c.name}</td>`;
+    const vals = MODELS.map(m => modelScores[m].dimAvgs[c.id]);
+    const maxVal = Math.max(...vals);
+    MODELS.forEach((m,i) => {
+      const v = vals[i];
+      const isBest = v > 0 && v === maxVal;
+      dimHtml += `<td style="${isBest?'font-weight:700;':''}">${v>0?v.toFixed(2):'-'}</td>`;
+    });
+    dimHtml += '</tr>';
+  });
+  dimHtml += '</table>';
+  document.getElementById('lb-dimensions').innerHTML = dimHtml;
 }
 
-// Init
+// ===== Export =====
+function exportJSON() {
+  const scores = getScores();
+  const blob = new Blob([JSON.stringify(scores, null, 2)], {type:'application/json'});
+  downloadBlob(blob, 'v3_eval_scores.json');
+}
+
+function exportCSV() {
+  const scores = getScores();
+  let csv = 'task_id,model,dimension,score\n';
+  for (let t=1;t<=50;t++) {
+    MODELS.forEach(m => {
+      UNIVERSAL_CRITERIA.forEach(c => {
+        const v = scores[`L1_${t}_${m}_${c.id}`];
+        if (v) csv += `${t},${m},${c.id}_${c.name},${v}\n`;
+      });
+      const eps = DATA.eval_points[String(t)] || [];
+      eps.forEach((ep, idx) => {
+        const v = scores[`L2_${t}_${m}_${idx}`];
+        if (v) csv += `${t},${m},L2_checkpoint_${idx+1},${v}\n`;
+      });
+    });
+  }
+  const blob = new Blob([csv], {type:'text/csv'});
+  downloadBlob(blob, 'v3_eval_scores.csv');
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+// ===== Utils =====
+function renderMd(text) { try{return marked.parse(text);}catch(e){return '<pre>'+esc(text)+'</pre>';} }
+function esc(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ===== Init =====
 function init() {
-  // Populate selects
-  const sel1 = document.getElementById('compare-select');
-  const sel2 = document.getElementById('eval-select');
-  for (let i = 1; i <= 50; i++) {
-    const p = DATA.prompts[String(i)];
-    const opt = `<option value="${i}">[${i}] ${p.title} (${p.capability.split('-')[0]})</option>`;
-    sel1.innerHTML += opt;
-    sel2.innerHTML += opt;
+  const sel = document.getElementById('compare-select');
+  for (let i=1;i<=50;i++) {
+    const p=DATA.prompts[String(i)];
+    sel.innerHTML += `<option value="${i}">[${i}] ${p.title} (${p.capability.split('-')[0]})</option>`;
   }
   renderOverview();
   renderTasks('all');
-  updateEvalProgress();
 }
-
 window.onload = init;
-window.onresize = () => { if (document.getElementById('panel-overview').classList.contains('active')) renderCharts(); };
+window.onresize = () => { if(document.getElementById('panel-overview').classList.contains('active')) renderCharts(); };
 </script>
 </body>
 </html>
