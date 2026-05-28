@@ -158,6 +158,35 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
   <!-- Overview -->
   <div class="panel active" id="panel-overview">
     <div class="stats-grid" id="stats-grid"></div>
+    <div style="background:white;border-radius:12px;padding:24px 28px;box-shadow:0 1px 3px rgba(0,0,0,0.06);margin-bottom:24px;line-height:1.8;">
+      <h3 style="font-size:16px;margin-bottom:14px;color:#111827;">LLM Judge 评估总结</h3>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:16px;">由 Qwen3.5-397B 作为裁判模型，对 3 个模型 × 50 道边界测试题的输出进行自动评估。评估体系包含 L1 通用质量维度（7项×1-5分）和 L2 任务专属检查点（4项×pass/fail）。</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px;">
+        <div style="background:#f0f0ff;border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:12px;color:#6366f1;font-weight:600;">GLM-5.1</div>
+          <div style="font-size:28px;font-weight:700;color:#6366f1;margin:6px 0;">4.86</div>
+          <div style="font-size:11px;color:#6b7280;">L1均分 4.90 | L2通过率 96%</div>
+        </div>
+        <div style="background:#fffbeb;border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:12px;color:#d97706;font-weight:600;">Qwen3.5-397B</div>
+          <div style="font-size:28px;font-weight:700;color:#d97706;margin:6px 0;">4.84</div>
+          <div style="font-size:11px;color:#6b7280;">L1均分 4.89 | L2通过率 95.5%</div>
+        </div>
+        <div style="background:#fef2f2;border-radius:10px;padding:16px;text-align:center;">
+          <div style="font-size:12px;color:#dc2626;font-weight:600;">文心5.1</div>
+          <div style="font-size:28px;font-weight:700;color:#dc2626;margin:6px 0;">4.55</div>
+          <div style="font-size:11px;color:#6b7280;">L1均分 4.62 | L2通过率 89%</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#374151;">
+        <p style="margin-bottom:10px;"><strong>整体格局：</strong>GLM-5.1 和 Qwen3.5 表现极为接近（综合分差仅 0.02），形成第一梯队；文心5.1 落后约 0.3 分，差距主要来自稳定性问题。</p>
+        <p style="margin-bottom:10px;"><strong>GLM-5.1 特点：</strong>信息密度和表达质量获满分（5.0），是三者中输出最精炼、结构最清晰的。独立思考维度（4.90）也领先，擅长给出非模板化的独到见解。弱项是诚实边界（4.78），偶尔对不确定内容过于自信。</p>
+        <p style="margin-bottom:10px;"><strong>Qwen3.5 特点：</strong>各维度最均衡，诚实边界（4.84）三者最高，更善于区分确定与推测。指令遵循度也略优于GLM。整体稳定，无明显短板，但在独立思考上（4.82）略保守。</p>
+        <p style="margin-bottom:10px;"><strong>文心5.1 特点：</strong>正常发挥时质量不差（多数题4.7+），但存在稳定性硬伤——第43题输出为空、第6题出现严重数据幻觉（擅自放大10倍）、第19题输出截断。这些"塌方"题目拉低了整体得分。</p>
+        <p><strong>共同短板：</strong>三个模型在"增长见顶资源再分配"（第6题）和"长文结构一致性"（第24题）上均有检查点未通过，说明复杂约束下的精确执行仍是当前大模型的共同挑战。</p>
+      </div>
+      <p style="font-size:11px;color:#9ca3af;margin-top:14px;">⚠️ 注意：裁判模型为Qwen3.5（被评模型之一），可能存在自评偏差。整体评分偏高（L1均分4.6-4.9），建议关注模型间的相对排序和具体失败案例，而非绝对分值。</p>
+    </div>
     <div class="charts-row">
       <div class="chart-card"><h3>各模型平均输出长度（按领域）</h3><div class="chart-container" id="chart-length"></div></div>
       <div class="chart-card"><h3>能力维度覆盖分布</h3><div class="chart-container" id="chart-capability"></div></div>
