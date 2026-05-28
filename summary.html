@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>模型能力边界效果总结</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #0f1724;
+  color: #e0e7ef;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #1a2332 0%, #0f1724 100%);
+  border-bottom: 1px solid #2a3a4e;
+  padding: 40px 0 32px;
+  text-align: center;
+}
+.header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+.header .subtitle {
+  color: #8899aa;
+  font-size: 1rem;
+}
+.header .update-badge {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 4px 12px;
+  background: rgba(96, 165, 250, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #60a5fa;
+}
+
+/* Section */
+.section {
+  padding: 48px 0;
+  border-bottom: 1px solid #1e2d3d;
+}
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: #f0f4f8;
+}
+.section-desc {
+  color: #8899aa;
+  margin-bottom: 24px;
+  font-size: 0.95rem;
+}
+
+/* Tier Cards */
+.tier-group { margin-bottom: 32px; }
+.tier-label {
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+.tier-s { background: rgba(251, 191, 36, 0.2); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.4); }
+.tier-s-minus { background: rgba(96, 165, 250, 0.2); color: #60a5fa; border: 1px solid rgba(96, 165, 250, 0.4); }
+.tier-a-plus { background: rgba(52, 211, 153, 0.2); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.4); }
+.tier-a { background: rgba(168, 85, 247, 0.2); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.4); }
+.tier-b-plus { background: rgba(107, 114, 128, 0.2); color: #9ca3af; border: 1px solid rgba(107, 114, 128, 0.4); }
+
+.model-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.model-card {
+  background: #1a2535;
+  border: 1px solid #2a3a4e;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.model-card:hover {
+  border-color: #4a6a8e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+.model-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.model-card .model-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f0f4f8;
+}
+.model-card .rating-badge {
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.model-card .positioning {
+  color: #8899aa;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+.model-card .metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.model-card .metric {
+  text-align: center;
+  padding: 8px 4px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+}
+.model-card .metric .value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #60a5fa;
+}
+.model-card .metric .label {
+  font-size: 0.7rem;
+  color: #6b7a8a;
+  margin-top: 2px;
+}
+
+/* Charts */
+.chart-container {
+  background: #1a2535;
+  border: 1px solid #2a3a4e;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+.chart-box { width: 100%; height: 450px; }
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.chart-controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.chart-controls label:hover { background: rgba(255,255,255,0.1); }
+.chart-controls input[type="checkbox"] { accent-color: #60a5fa; }
+
+/* Comparison Table */
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.comparison-table th {
+  background: #1e2d3d;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #a0b4c8;
+  border-bottom: 2px solid #2a3a4e;
+  position: sticky;
+  top: 0;
+}
+.comparison-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #1e2d3d;
+}
+.comparison-table tr:hover td { background: rgba(96, 165, 250, 0.05); }
+.bar-cell {
+  position: relative;
+}
+.bar-bg {
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  height: 6px;
+  border-radius: 3px;
+  opacity: 0.6;
+}
+
+/* Detail Accordion */
+.accordion-item {
+  background: #1a2535;
+  border: 1px solid #2a3a4e;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.accordion-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s;
+}
+.accordion-header:hover { background: rgba(255,255,255,0.03); }
+.accordion-header .left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.accordion-header .arrow {
+  transition: transform 0.3s;
+  color: #6b7a8a;
+}
+.accordion-item.open .accordion-header .arrow { transform: rotate(180deg); }
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.accordion-item.open .accordion-body { max-height: 3000px; }
+.accordion-content {
+  padding: 0 20px 20px;
+  color: #b0c4d8;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+.accordion-content h4 {
+  color: #f0f4f8;
+  margin: 16px 0 8px;
+  font-size: 1rem;
+}
+.accordion-content ul { padding-left: 20px; margin: 8px 0; }
+.accordion-content li { margin-bottom: 4px; }
+.accordion-content .tag-good {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(52, 211, 153, 0.15);
+  color: #34d399;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin: 2px 4px 2px 0;
+}
+.accordion-content .tag-bad {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin: 2px 4px 2px 0;
+}
+.accordion-content blockquote {
+  border-left: 3px solid #4a6a8e;
+  padding: 8px 16px;
+  margin: 12px 0;
+  background: rgba(255,255,255,0.02);
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+  color: #8899aa;
+}
+
+/* Scenario Selector */
+.scenario-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.scenario-btn {
+  padding: 8px 16px;
+  background: #1a2535;
+  border: 1px solid #2a3a4e;
+  border-radius: 8px;
+  color: #a0b4c8;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.scenario-btn:hover { border-color: #60a5fa; color: #60a5fa; }
+.scenario-btn.active { background: rgba(96, 165, 250, 0.15); border-color: #60a5fa; color: #60a5fa; }
+.scenario-result {
+  background: #1a2535;
+  border: 1px solid #2a3a4e;
+  border-radius: 12px;
+  padding: 20px;
+  display: none;
+}
+.scenario-result.visible { display: block; }
+.scenario-result .rec-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.scenario-result .rec-label {
+  min-width: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.rec-label.first { color: #34d399; }
+.rec-label.backup { color: #60a5fa; }
+.rec-label.avoid { color: #ef4444; }
+.rec-model {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+}
+.rec-model.good { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+.rec-model.ok { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+.rec-model.bad { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.scenario-reason {
+  color: #6b7a8a;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* Footer */
+.footer {
+  padding: 32px 0;
+  text-align: center;
+  color: #5a6a7a;
+  font-size: 0.85rem;
+}
+.footer a { color: #60a5fa; text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header h1 { font-size: 1.6rem; }
+  .model-cards { grid-template-columns: 1fr; }
+  .chart-box { height: 350px; }
+  .container { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="container">
+    <h1>模型能力边界效果总结</h1>
+    <p class="subtitle">9个主流大模型的深度横向对比 &mdash; 精确约束 / 逻辑推理 / 战略分析 / 创意写作</p>
+    <span class="update-badge">已更新至 0506-0509 周 &middot; 累计160+道测试题</span>
+  </div>
+</header>
+
+<!-- Section 1: Tier Overview -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">一、梯队总览</h2>
+    <p class="section-desc">基于约束执行力、深度分析、信息密度、独立思考、可靠性等多维度综合评级</p>
+
+    <div class="tier-group">
+      <div class="tier-label tier-s">S 级</div>
+      <div class="model-cards" id="tier-s-cards"></div>
+    </div>
+    <div class="tier-group">
+      <div class="tier-label tier-s-minus">S- 级</div>
+      <div class="model-cards" id="tier-s-minus-cards"></div>
+    </div>
+    <div class="tier-group">
+      <div class="tier-label tier-a-plus">A+ 级</div>
+      <div class="model-cards" id="tier-a-plus-cards"></div>
+    </div>
+    <div class="tier-group">
+      <div class="tier-label tier-a">A 级</div>
+      <div class="model-cards" id="tier-a-cards"></div>
+    </div>
+    <div class="tier-group">
+      <div class="tier-label tier-b-plus">B+ 级</div>
+      <div class="model-cards" id="tier-b-plus-cards"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 2: Radar Chart -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">二、能力雷达图对比</h2>
+    <p class="section-desc">选择模型查看多维度能力分布，点击可叠加对比</p>
+    <div class="chart-container">
+      <div class="chart-controls" id="radarControls"></div>
+      <div class="chart-box" id="radarChart"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 3: Bar Charts -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">三、关键指标对比</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+      <div class="chart-container">
+        <h3 style="font-size: 1rem; color: #a0b4c8; margin-bottom: 12px;">平均输出字数</h3>
+        <div class="chart-box" id="lengthChart" style="height: 350px;"></div>
+      </div>
+      <div class="chart-container">
+        <h3 style="font-size: 1rem; color: #a0b4c8; margin-bottom: 12px;">平均响应时间 (秒)</h3>
+        <div class="chart-box" id="speedChart" style="height: 350px;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Section 4: Model Details -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">四、各模型深度分析</h2>
+    <p class="section-desc">点击展开查看每个模型的详细性格画像、典型表现与适配场景</p>
+    <div id="modelAccordion"></div>
+  </div>
+</section>
+
+<!-- Section 5: Scenario Selector -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">五、场景选型建议</h2>
+    <p class="section-desc">选择你的使用场景，获取模型推荐</p>
+    <div class="scenario-selector" id="scenarioButtons"></div>
+    <div class="scenario-result" id="scenarioResult"></div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>数据来源：160+ 道模型边界测试题 &middot; LLM Judge 自动评估 + 人工定性分析</p>
+    <p style="margin-top: 8px;">
+      <a href="index.html">V3 可视化工作台 (50题详细数据)</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// ============ DATA ============
+const MODELS = [
+  {
+    name: "Claude Opus 4.6", tier: "S", positioning: "精密执行器",
+    avgLength: 800, avgTime: null, reliability: 100,
+    scores: { constraint: 5.0, density: 4.9, thinking: 4.6, metacog: 4.3, speed: 3.5, reliability: 5.0 },
+    color: "#fbbf24",
+    detail: {
+      persona: "所有模型中最\"机械精确\"的。它不像一个有温度的写作者，更像一台经过精密校准的仪器——你给它什么约束，它就严格执行什么约束，不多不少。",
+      strengths: ["字数控制精确到每一个字", "禁用词零违规率", "面对不可能任务直接拒绝并给出理论依据", "格式遵守像真正的法律条文"],
+      weaknesses: ["需要发散创意的场景显得\"冷\"", "不太会\"绕过限制找替代方案\"", "较少主动暴露自身思考过程"],
+      bestFor: ["严格格式文书（合同/规范/API文档）", "精确约束创作", "内容审核/安全把关", "代码生成"],
+      avoid: ["发散创意任务", "需要\"有温度\"的内容营销", "需要模型深度自我反思的场景"],
+      quote: "在\"描写饥饿但不能出现饿/饥/吃/食/饱\"的测试中，全文无一触犯禁用词。"
+    }
+  },
+  {
+    name: "DeepSeek-V4-Pro", tier: "S", positioning: "深度战略家",
+    avgLength: 11000, avgTime: 235, reliability: 100,
+    scores: { constraint: 3.5, density: 4.2, thinking: 4.7, metacog: 4.3, speed: 1.5, reliability: 5.0 },
+    color: "#f59e0b",
+    detail: {
+      persona: "所有模型中\"思考最深\"的。每次输出背后都有大量推理链（reasoning tokens），战略分析达到接近人类高级顾问的水平。代价是速度——平均每题需要3-4分钟响应，但产出质量配得上这个等待。",
+      strengths: ["交付物级别输出（完整框架+数学推导+实施路径）", "推理链中自我质疑、假设检验", "能给出\"让人拍大腿\"的洞察", "100%完成率，无截断无空输出"],
+      weaknesses: ["平均235秒响应时间", "输出偏长（~11000字）", "约束执行不如Claude精确"],
+      bestFor: ["战略规划文档", "商业模式设计", "市场进入策略", "投资尽调报告"],
+      avoid: ["实时交互（4分钟等待）", "简单问答", "需要精确约束的格式化任务"],
+      quote: "月费199元对低频用户的心理感知是'我每个月付钱，但很可能这个月我根本用不上'，这会产生持续的'浪费焦虑'。"
+    }
+  },
+  {
+    name: "GLM-5.1", tier: "S-", positioning: "清醒分析师",
+    avgLength: 2098, avgTime: 88.7, reliability: 100,
+    scores: { constraint: 4.2, density: 5.0, thinking: 4.9, metacog: 5.0, speed: 2.5, reliability: 5.0 },
+    color: "#60a5fa",
+    detail: {
+      persona: "所有模型中\"自我意识\"最强的。它不只是回答问题，还经常反思\"我在做什么\"、\"这个指令和真实性之间有张力\"。元认知能力使它在需要独立判断的场景下表现卓越。",
+      strengths: ["独立思考4.90（最高）", "信息密度5.0（满分）", "表达质量5.0（满分）", "唯一会主动说\"这是我的能力边界\"的模型"],
+      weaknesses: ["响应时间长（88.7秒）", "创意+约束双重压力下会失分", "偶有禁用词违规"],
+      bestFor: ["战略分析/商业决策支持", "需要独立见解的深度咨询", "数据解读", "教育类深度内容"],
+      avoid: ["需要极快响应的场景", "字数精确控制的创意写作", "需要\"惊艳\"而非\"正确\"的任务"],
+      quote: "面对'写一段正读倒读都通顺的100字自我介绍'：GLM是唯一直接说'这个要求在汉语中几乎不可能严格实现'的模型。"
+    }
+  },
+  {
+    name: "Qwen3.5-397B", tier: "S-", positioning: "可靠全能手",
+    avgLength: 2796, avgTime: 30.9, reliability: 100,
+    scores: { constraint: 4.2, density: 4.8, thinking: 4.5, metacog: 3.8, speed: 4.2, reliability: 5.0 },
+    color: "#818cf8",
+    detail: {
+      persona: "\"永远不会让你失望但也很少让你惊喜\"的模型。核心竞争力不是某个单项突出，而是所有维度的均衡和稳定。需要一个\"放心用\"的模型跑自动化管线，Qwen是最安全的选择。",
+      strengths: ["各维度方差最小（最均衡）", "诚实边界4.84（最高）", "30.9秒响应（最快之一）", "善于标注不确定性和置信度"],
+      weaknesses: ["缺少\"惊艳感\"", "独立思考偏保守", "创意差异度不足"],
+      bestFor: ["生产环境自动化", "大规模批量处理", "数据分析和结构化输出", "需要标注不确定性的分析"],
+      avoid: ["需要突破性创新见解的场景", "个性化风格创意内容", "对\"惊喜感\"有要求的任务"],
+      quote: "在需要承认'不确定'的场景中，Qwen不会强行给出确定性结论——它的置信度分布最合理。"
+    }
+  },
+  {
+    name: "GPT-5.5", tier: "S-", positioning: "精炼决策者",
+    avgLength: 6350, avgTime: null, reliability: 100,
+    scores: { constraint: 4.0, density: 4.9, thinking: 4.5, metacog: 3.8, speed: 4.0, reliability: 5.0 },
+    color: "#2dd4bf",
+    detail: {
+      persona: "\"信息效率最高\"的模型。输出像高管的决策备忘录——只有核心结论、关键数据和行动建议，没有铺垫、没有修辞、没有多余的上下文解释。",
+      strengths: ["同等信息量用一半篇幅", "直击本质，开头就给结论", "对话感强、可行性优先", "100%完成率"],
+      weaknesses: ["篇幅可能不够详尽", "缺少详细数学推导", "不适合需要故事性的内容"],
+      bestFor: ["高管决策支持", "快速方案评审", "多方案对比选择", "信息密集型简报"],
+      avoid: ["需要详细交付文档的咨询项目", "精算场景", "培训/营销内容"],
+      quote: "低频产品的破局不在于'让用户多用'，而在于三件事：让用户在不用的时候也觉得值；让每次使用都完美；让一个满意用户带来一群用户。"
+    }
+  },
+  {
+    name: "DeepSeek-V3", tier: "A+", positioning: "高速精准刀",
+    avgLength: 12700, avgTime: 10, reliability: 100,
+    scores: { constraint: 4.5, density: 4.5, thinking: 3.8, metacog: 3.5, speed: 5.0, reliability: 5.0 },
+    color: "#34d399",
+    detail: {
+      persona: "\"速度与精准\"平衡最好的模型。在60题边界测试中，平均4-16秒响应，100%完成率，对不可能任务的识别几乎完美。像一把锋利的刀——切得快、切得准。",
+      strengths: ["速度极快（4-16秒）", "不可能任务识别100%正确", "风格仿写能力出色（鲁迅/武侠）", "Token效率极高"],
+      weaknesses: ["策略题上偏\"教科书\"", "中文字数控制一般", "深度分析不如V4-Pro"],
+      bestFor: ["快速边界检测/审核", "大规模并行调用", "风格化创作", "实时交互场景"],
+      avoid: ["需要极深战略展开的咨询", "精确字数控制"],
+      quote: "'网'之一物，今人奉若神明，趋之若鹜，殊不知已自缚于无形之茧中矣……（模仿鲁迅风格）"
+    }
+  },
+  {
+    name: "文心5.0", tier: "A+", positioning: "激情创作者",
+    avgLength: 3000, avgTime: null, reliability: 90,
+    scores: { constraint: 2.5, density: 3.0, thinking: 3.5, metacog: 2.0, speed: 3.5, reliability: 4.0 },
+    color: "#a78bfa",
+    detail: {
+      persona: "像一位热情洋溢但不太守规矩的作家。输出最有\"血肉感\"和\"故事性\"，能把枯燥的主题写得引人入胜。但也是最\"不听话\"的模型——字数约束对它来说像是\"建议\"而非\"规则\"。",
+      strengths: ["文学表达三模型最强", "恐怖故事/散文有画面感和节奏感", "面对不可能任务会找创新解法", "创意发散能力突出"],
+      weaknesses: ["字数约束当\"善意的建议\"", "信息密度低（输出是其他模型3-5倍）", "把元认知当作表演素材"],
+      bestFor: ["创意写作/小说/散文", "内容营销和品牌故事", "头脑风暴和Idea发散", "教育类生动讲解"],
+      avoid: ["有严格约束的任务", "需要简洁精准的数据分析", "需要模型直接拒绝的安全场景"],
+      quote: "腹中空落得像被掏空的鸟巢，每一次吞咽都像在摩擦粗糙的砂纸——这种描写饥饿的表达其他模型都写不出来。"
+    }
+  },
+  {
+    name: "文心5.1", tier: "A", positioning: "不稳定潜力股",
+    avgLength: 2576, avgTime: 54.9, reliability: 90,
+    scores: { constraint: 3.2, density: 4.0, thinking: 3.8, metacog: 2.5, speed: 3.5, reliability: 3.5 },
+    color: "#f472b6",
+    detail: {
+      persona: "最\"让人纠结\"的模型。上限不低——管理类、教育类题目几乎能和GLM、Qwen打平。但下限极低——空输出、数据幻觉、输出截断等硬伤让它无法被信任用于无人值守的场景。",
+      strengths: ["正常发挥时质量接近S-级（排除塌方题后L1≈4.82）", "激励设计/战略假设等题满分", "响应速度中等（54.9秒）"],
+      weaknesses: ["空输出（content_length=0）", "数据幻觉（200万变2000万）", "输出截断/格式异常", "计算逻辑错误"],
+      bestFor: ["有人工审核的内容流水线", "教育类知识问答", "管理类分析（需兜底）"],
+      avoid: ["无人工兜底的自动化", "数字计算精确任务", "对幻觉零容忍的场景"],
+      quote: "50题测试中出现5次严重故障（空输出/幻觉/截断/计算错误），无明显规律——这使得可靠性很难预测。"
+    }
+  },
+  {
+    name: "Kimi-K2.5", tier: "B+", positioning: "潜力未兑现",
+    avgLength: 1200, avgTime: 30, reliability: 70,
+    scores: { constraint: 3.0, density: 2.8, thinking: 3.5, metacog: 2.5, speed: 3.8, reliability: 2.0 },
+    color: "#9ca3af",
+    detail: {
+      persona: "最\"让人惋惜\"的模型。正常工作时输出质量不错——对停机问题的解释比DeepSeek-V3更详细。但30%的超时失败率让它无法被当作可靠工具使用。像一个能力不错但经常缺勤的员工。",
+      strengths: ["成功时解释详细有深度", "停机问题/永动机等解释优于DeepSeek-V3"],
+      weaknesses: ["30%超时失败率（API连接层面）", "Token效率低（同题多3-5x）", "解释过于冗长"],
+      bestFor: ["非关键路径的实验性探索", "容忍度高的离线任务（需重试机制）"],
+      avoid: ["任何生产环境", "实时交互", "无重试机制的自动化"],
+      quote: "题1、4、7超时：elapsed=0.00s, tokens=0——不是\"想太久\"，而是API连接层面的失败。"
+    }
+  }
+];
+
+const SCENARIOS = [
+  { name: "法律合同/规范文档", first: "Claude Opus 4.6", backup: "GLM-5.1", avoid: "文心系列、Kimi", reason: "格式精确性要求极高" },
+  { name: "战略咨询/完整交付", first: "DeepSeek-V4-Pro", backup: "GLM-5.1", avoid: "Kimi", reason: "需要交付物级别的深度输出" },
+  { name: "快速决策支持", first: "GPT-5.5", backup: "GLM-5.1", avoid: "DeepSeek-V4-Pro", reason: "高管不想看长文，要精炼结论" },
+  { name: "大规模自动化/API", first: "Qwen3.5-397B", backup: "DeepSeek-V3", avoid: "Kimi、文心5.1", reason: "稳定性+速度优先" },
+  { name: "实时边界检测/审核", first: "DeepSeek-V3", backup: "Claude Opus 4.6", avoid: "Kimi", reason: "速度极快+判断精准" },
+  { name: "创意写作/品牌故事", first: "文心5.0", backup: "GLM-5.1", avoid: "Claude Opus 4.6", reason: "需要文学感和画面感" },
+  { name: "数据分析/报告", first: "Qwen3.5-397B", backup: "GLM-5.1", avoid: "文心5.1、Kimi", reason: "准确+结构化+标注不确定性" },
+  { name: "代码生成/技术文档", first: "Claude Opus 4.6", backup: "Qwen3.5-397B", avoid: "文心系列", reason: "格式精确+逻辑严密" },
+  { name: "教育内容/知识讲解", first: "GLM-5.1", backup: "DeepSeek-V4-Pro", avoid: "-", reason: "深度+准确+生动性兼顾" },
+  { name: "头脑风暴/发散创意", first: "文心5.0", backup: "GLM-5.1", avoid: "Claude Opus 4.6", reason: "发散能力强，不怕\"超纲\"" },
+  { name: "风格仿写/文学创作", first: "文心5.0", backup: "DeepSeek-V3", avoid: "Qwen3.5-397B", reason: "语言质感+风格把控" },
+  { name: "商业模式设计", first: "DeepSeek-V4-Pro", backup: "GLM-5.1", avoid: "Kimi", reason: "完整数学推演+可执行方案" },
+  { name: "用户对话/客服", first: "Qwen3.5-397B", backup: "GPT-5.5", avoid: "Claude Opus 4.6", reason: "均衡+自然+有温度" },
+  { name: "内容审核/安全把关", first: "Claude Opus 4.6", backup: "DeepSeek-V3", avoid: "文心5.0、Kimi", reason: "该拒绝时不犹豫" },
+];
+
+// ============ RENDER FUNCTIONS ============
+
+function renderTierCards() {
+  const tiers = { 'S': 'tier-s-cards', 'S-': 'tier-s-minus-cards', 'A+': 'tier-a-plus-cards', 'A': 'tier-a-cards', 'B+': 'tier-b-plus-cards' };
+  const tierClasses = { 'S': 'tier-s', 'S-': 'tier-s-minus', 'A+': 'tier-a-plus', 'A': 'tier-a', 'B+': 'tier-b-plus' };
+
+  for (const [tier, containerId] of Object.entries(tiers)) {
+    const container = document.getElementById(containerId);
+    const models = MODELS.filter(m => m.tier === tier);
+    container.innerHTML = models.map(m => `
+      <div class="model-card" onclick="scrollToModel('${m.name}')">
+        <div class="card-header">
+          <span class="model-name">${m.name}</span>
+          <span class="rating-badge ${tierClasses[tier]}">${tier}</span>
+        </div>
+        <div class="positioning">${m.positioning}</div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="value">${m.avgLength >= 1000 ? (m.avgLength/1000).toFixed(1) + 'k' : m.avgLength}</div>
+            <div class="label">平均字数</div>
+          </div>
+          <div class="metric">
+            <div class="value">${m.avgTime ? m.avgTime + 's' : '-'}</div>
+            <div class="label">响应时间</div>
+          </div>
+          <div class="metric">
+            <div class="value">${m.reliability}%</div>
+            <div class="label">可靠性</div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function renderRadarChart() {
+  const container = document.getElementById('radarControls');
+  container.innerHTML = MODELS.map((m, i) => `
+    <label>
+      <input type="checkbox" data-idx="${i}" ${i < 4 ? 'checked' : ''} onchange="updateRadar()">
+      <span style="color:${m.color}">${m.name}</span>
+    </label>
+  `).join('');
+  updateRadar();
+}
+
+function updateRadar() {
+  const checked = [...document.querySelectorAll('#radarControls input:checked')].map(el => parseInt(el.dataset.idx));
+  const chart = echarts.init(document.getElementById('radarChart'));
+
+  const indicator = [
+    { name: '约束执行', max: 5 },
+    { name: '信息密度', max: 5 },
+    { name: '独立思考', max: 5 },
+    { name: '元认知', max: 5 },
+    { name: '速度', max: 5 },
+    { name: '可靠性', max: 5 },
+  ];
+
+  const series = checked.map(idx => {
+    const m = MODELS[idx];
+    return {
+      value: [m.scores.constraint, m.scores.density, m.scores.thinking, m.scores.metacog, m.scores.speed, m.scores.reliability],
+      name: m.name,
+      lineStyle: { width: 2 },
+      areaStyle: { opacity: 0.1 },
+      itemStyle: { color: m.color },
+    };
+  });
+
+  chart.setOption({
+    tooltip: { trigger: 'item' },
+    legend: { data: checked.map(i => MODELS[i].name), bottom: 0, textStyle: { color: '#8899aa' } },
+    radar: { indicator, radius: '65%', axisName: { color: '#a0b4c8' }, splitArea: { areaStyle: { color: ['rgba(255,255,255,0.02)', 'rgba(255,255,255,0.04)'] } }, splitLine: { lineStyle: { color: '#2a3a4e' } }, axisLine: { lineStyle: { color: '#2a3a4e' } } },
+    series: [{ type: 'radar', data: series }]
+  }, true);
+
+  window.addEventListener('resize', () => chart.resize());
+}
+
+function renderBarCharts() {
+  const names = MODELS.map(m => m.name.replace('-397B', '').replace(' Opus 4.6', ''));
+  const colors = MODELS.map(m => m.color);
+
+  // Length chart
+  const lengthChart = echarts.init(document.getElementById('lengthChart'));
+  lengthChart.setOption({
+    tooltip: { trigger: 'axis' },
+    xAxis: { type: 'category', data: names, axisLabel: { color: '#8899aa', rotate: 30, fontSize: 10 }, axisLine: { lineStyle: { color: '#2a3a4e' } } },
+    yAxis: { type: 'value', axisLabel: { color: '#8899aa' }, splitLine: { lineStyle: { color: '#1e2d3d' } } },
+    series: [{ type: 'bar', data: MODELS.map((m, i) => ({ value: m.avgLength, itemStyle: { color: colors[i] } })), barWidth: '50%' }],
+    grid: { left: 60, right: 20, bottom: 60, top: 20 }
+  });
+
+  // Speed chart
+  const speedChart = echarts.init(document.getElementById('speedChart'));
+  const timeData = MODELS.map((m, i) => ({ value: m.avgTime || 0, itemStyle: { color: colors[i] } }));
+  speedChart.setOption({
+    tooltip: { trigger: 'axis' },
+    xAxis: { type: 'category', data: names, axisLabel: { color: '#8899aa', rotate: 30, fontSize: 10 }, axisLine: { lineStyle: { color: '#2a3a4e' } } },
+    yAxis: { type: 'value', axisLabel: { color: '#8899aa' }, splitLine: { lineStyle: { color: '#1e2d3d' } } },
+    series: [{ type: 'bar', data: timeData, barWidth: '50%' }],
+    grid: { left: 60, right: 20, bottom: 60, top: 20 }
+  });
+
+  window.addEventListener('resize', () => { lengthChart.resize(); speedChart.resize(); });
+}
+
+function renderAccordion() {
+  const container = document.getElementById('modelAccordion');
+  container.innerHTML = MODELS.map((m, i) => `
+    <div class="accordion-item" id="model-${m.name.replace(/[^a-zA-Z0-9]/g, '')}">
+      <div class="accordion-header" onclick="toggleAccordion(this)">
+        <div class="left">
+          <span style="color:${m.color}; font-weight:600;">${m.name}</span>
+          <span style="color:#6b7a8a; font-size:0.85rem;">${m.positioning}</span>
+        </div>
+        <span class="arrow">&#9660;</span>
+      </div>
+      <div class="accordion-body">
+        <div class="accordion-content">
+          <h4>性格画像</h4>
+          <p>${m.detail.persona}</p>
+
+          <h4>核心优势</h4>
+          <ul>${m.detail.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+
+          <h4>短板</h4>
+          <ul>${m.detail.weaknesses.map(s => `<li>${s}</li>`).join('')}</ul>
+
+          <h4>最适合</h4>
+          <div>${m.detail.bestFor.map(s => `<span class="tag-good">${s}</span>`).join('')}</div>
+
+          <h4>不适合</h4>
+          <div>${m.detail.avoid.map(s => `<span class="tag-bad">${s}</span>`).join('')}</div>
+
+          <blockquote>${m.detail.quote}</blockquote>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleAccordion(header) {
+  const item = header.parentElement;
+  item.classList.toggle('open');
+}
+
+function scrollToModel(name) {
+  const id = 'model-' + name.replace(/[^a-zA-Z0-9]/g, '');
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('open');
+  }
+}
+
+function renderScenarios() {
+  const btnContainer = document.getElementById('scenarioButtons');
+  btnContainer.innerHTML = SCENARIOS.map((s, i) => `
+    <button class="scenario-btn" onclick="showScenario(${i})">${s.name}</button>
+  `).join('');
+}
+
+function showScenario(idx) {
+  const btns = document.querySelectorAll('.scenario-btn');
+  btns.forEach((b, i) => b.classList.toggle('active', i === idx));
+
+  const s = SCENARIOS[idx];
+  const result = document.getElementById('scenarioResult');
+  result.classList.add('visible');
+  result.innerHTML = `
+    <div class="rec-row">
+      <span class="rec-label first">首选</span>
+      <span class="rec-model good">${s.first}</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-label backup">备选</span>
+      <span class="rec-model ok">${s.backup}</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-label avoid">避免</span>
+      <span class="rec-model bad">${s.avoid}</span>
+    </div>
+    <div class="scenario-reason">理由：${s.reason}</div>
+  `;
+}
+
+// ============ INIT ============
+renderTierCards();
+renderRadarChart();
+renderBarCharts();
+renderAccordion();
+renderScenarios();
+</script>
+</body>
+</html>
