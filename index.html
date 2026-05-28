@@ -168,15 +168,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
   <!-- Eval Panel -->
   <div class="panel" id="panel-eval">
     <div class="eval-section">
-      <h3>评估进度</h3>
+      <h3>评估总览</h3>
       <div id="eval-progress"></div>
     </div>
-    <div class="eval-section">
-      <h3>逐题评估</h3>
-      <div class="compare-header">
-        <select class="compare-select" id="eval-select" onchange="loadEval(this.value)"></select>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="eval-section">
+        <h3>逐题评估</h3>
+        <div class="compare-header">
+          <select class="compare-select" id="eval-select" onchange="loadEval(this.value)"></select>
+        </div>
+        <div id="eval-content"></div>
       </div>
-      <div id="eval-content"></div>
+      <div class="eval-section">
+        <h3>当前题目 · 雷达图对比</h3>
+        <div id="eval-radar" style="width:100%;height:360px;"></div>
+        <div style="margin-top:12px;padding:12px;background:#f9fafb;border-radius:8px;font-size:11px;color:#6b7280;">
+          <strong>评分说明：</strong><br>
+          F1 指令遵循 · F2 内容一致性 · F3 实操可用性 · F4 信息密度<br>
+          F5 诚实与边界感 · F6 独立思考 · F7 表达质量<br>
+          每项1-5分，5分最优。打分后雷达图实时更新。
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -355,29 +367,81 @@ function renderMd(text) {
 function escapeHtml(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // Eval
+const UNIVERSAL_CRITERIA = [
+  { id: 'F1', name: '指令遵循', tip: '是否完整执行了prompt中的所有显式要求' },
+  { id: 'F2', name: '内容一致性', tip: '输出内部是否前后一致、不自相矛盾' },
+  { id: 'F3', name: '实操可用性', tip: '输出能否被真实场景的人直接采纳使用' },
+  { id: 'F4', name: '信息密度', tip: '有效信息占比，是否精炼不注水' },
+  { id: 'F5', name: '诚实与边界感', tip: '不确定时是否承认，是否区分事实和推测' },
+  { id: 'F6', name: '独立思考', tip: '是否有非模板化的独立见解' },
+  { id: 'F7', name: '表达质量', tip: '结构清晰度、可读性、专业度' },
+];
+
 function loadEval(tid) {
   if (!tid) return;
   const eps = DATA.eval_points[String(tid)] || [];
   const scores = getEvalScores();
   const content = document.getElementById('eval-content');
 
-  let html = '<div style="margin-bottom:16px;">';
+  let html = '';
   MODELS.forEach(m => {
-    html += `<h4 style="margin:12px 0 8px;color:${MODEL_COLORS[m]}">${DATA.models[m]}</h4>`;
+    html += `<div class="eval-model-block" style="margin-bottom:24px;padding:16px;background:#fafafa;border-radius:10px;border-left:4px solid ${MODEL_COLORS[m]}">`;
+    html += `<h4 style="margin:0 0 12px;color:${MODEL_COLORS[m]};font-size:14px;">${DATA.models[m]}</h4>`;
+
+    // Layer 1: Universal dimensions (1-5 scoring)
+    html += `<div style="margin-bottom:14px;"><div style="font-size:12px;color:#6b7280;margin-bottom:8px;font-weight:600;">Layer 1: 通用质量维度（1-5分）</div>`;
+    UNIVERSAL_CRITERIA.forEach(c => {
+      const key = `L1_${tid}_${m}_${c.id}`;
+      const val = scores[key] || 0;
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;">
+        <span style="font-size:12px;width:90px;font-weight:500;" title="${c.tip}">${c.id} ${c.name}</span>
+        <div style="display:flex;gap:3px;">`;
+      for (let s = 1; s <= 5; s++) {
+        const active = val == s;
+        html += `<span class="score-dot ${active?'score-active':''}" style="width:28px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:11px;cursor:pointer;border:1px solid ${active?MODEL_COLORS[m]:'#d1d5db'};background:${active?MODEL_COLORS[m]:'white'};color:${active?'white':'#6b7280'};" onclick="setScore('${key}',${s})">${s}</span>`;
+      }
+      html += `</div></div>`;
+    });
+    html += `</div>`;
+
+    // Layer 2: Task-specific checkpoints (pass/fail)
+    html += `<div><div style="font-size:12px;color:#6b7280;margin-bottom:8px;font-weight:600;">Layer 2: 任务检查点（Pass/Fail）</div>`;
     eps.forEach((ep, idx) => {
-      const key = `${tid}_${m}_${idx}`;
+      const key = `L2_${tid}_${m}_${idx}`;
       const val = scores[key] || '';
       html += `<div class="eval-item">
         <span class="eval-check-label">${ep}</span>
         <div class="eval-btns">
-          <span class="eval-btn ${val==='pass'?'pass':''}" onclick="setEval('${key}','pass',this)">✓ Pass</span>
-          <span class="eval-btn ${val==='fail'?'fail':''}" onclick="setEval('${key}','fail',this)">✗ Fail</span>
+          <span class="eval-btn ${val==='pass'?'pass':''}" onclick="setEval('${key}','pass',this)">✓</span>
+          <span class="eval-btn ${val==='fail'?'fail':''}" onclick="setEval('${key}','fail',this)">✗</span>
         </div>
       </div>`;
     });
+    html += `</div>`;
+
+    // Show computed score
+    const l1scores = UNIVERSAL_CRITERIA.map(c => scores[`L1_${tid}_${m}_${c.id}`] || 0);
+    const l1avg = l1scores.filter(s=>s>0).length > 0 ? (l1scores.reduce((a,b)=>a+b,0) / l1scores.filter(s=>s>0).length).toFixed(1) : '-';
+    const l2pass = eps.filter((_, idx) => scores[`L2_${tid}_${m}_${idx}`] === 'pass').length;
+    const l2total = eps.length;
+    html += `<div style="margin-top:10px;padding:8px 12px;background:white;border-radius:6px;font-size:12px;display:flex;gap:16px;">
+      <span>L1均分: <strong>${l1avg}</strong>/5</span>
+      <span>L2通过: <strong>${l2pass}/${l2total}</strong></span>
+    </div>`;
+
+    html += `</div>`;
   });
-  html += '</div>';
+
   content.innerHTML = html;
+  renderRadarChart(tid);
+}
+
+function setScore(key, val) {
+  const scores = getEvalScores();
+  scores[key] = val;
+  saveEvalScores(scores);
+  const tid = document.getElementById('eval-select').value;
+  loadEval(tid);
 }
 
 function setEval(key, val, el) {
@@ -386,14 +450,58 @@ function setEval(key, val, el) {
   saveEvalScores(scores);
   el.parentElement.querySelectorAll('.eval-btn').forEach(b => { b.classList.remove('pass','fail'); });
   el.classList.add(val);
+  const tid = document.getElementById('eval-select').value;
+  renderRadarChart(tid);
   updateEvalProgress();
+}
+
+function renderRadarChart(tid) {
+  const scores = getEvalScores();
+  const chartDom = document.getElementById('eval-radar');
+  if (!chartDom) return;
+  const chart = echarts.init(chartDom);
+
+  const indicator = UNIVERSAL_CRITERIA.map(c => ({ name: c.name, max: 5 }));
+  const series = MODELS.map(m => {
+    const values = UNIVERSAL_CRITERIA.map(c => scores[`L1_${tid}_${m}_${c.id}`] || 0);
+    return { value: values, name: DATA.models[m], lineStyle: { color: MODEL_COLORS[m] }, itemStyle: { color: MODEL_COLORS[m] }, areaStyle: { color: MODEL_COLORS[m], opacity: 0.1 } };
+  });
+
+  chart.setOption({
+    tooltip: {},
+    legend: { data: MODELS.map(m => DATA.models[m]), bottom: 0 },
+    radar: { indicator, radius: '65%' },
+    series: [{ type: 'radar', data: series }]
+  });
 }
 
 function updateEvalProgress() {
   const scores = getEvalScores();
-  const total = 50 * MODELS.length * 4; // 50 tasks × 3 models × ~4 criteria
-  const done = Object.keys(scores).length;
-  document.getElementById('eval-progress').innerHTML = `<div style="font-size:13px;">已评估 ${done} / ~${total} 项 (${Math.round(done/total*100)}%)</div>`;
+  const l1Total = 50 * MODELS.length * 7;
+  const l2Total = 50 * MODELS.length * 4;
+  const l1Done = Object.keys(scores).filter(k => k.startsWith('L1_') && scores[k] > 0).length;
+  const l2Done = Object.keys(scores).filter(k => k.startsWith('L2_')).length;
+
+  // Compute overall model averages
+  let summaryHtml = `<div style="font-size:13px;margin-bottom:12px;">评估进度: L1 ${l1Done}/${l1Total} | L2 ${l2Done}/${l2Total}</div>`;
+  summaryHtml += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">';
+  MODELS.forEach(m => {
+    const l1vals = [];
+    for (let t = 1; t <= 50; t++) {
+      UNIVERSAL_CRITERIA.forEach(c => {
+        const v = scores[`L1_${t}_${m}_${c.id}`];
+        if (v && v > 0) l1vals.push(v);
+      });
+    }
+    const avg = l1vals.length > 0 ? (l1vals.reduce((a,b)=>a+b,0)/l1vals.length).toFixed(2) : '-';
+    summaryHtml += `<div style="text-align:center;padding:10px;background:white;border-radius:8px;border-top:3px solid ${MODEL_COLORS[m]}">
+      <div style="font-size:11px;color:#6b7280;">${DATA.models[m]}</div>
+      <div style="font-size:20px;font-weight:700;">${avg}</div>
+      <div style="font-size:10px;color:#9ca3af;">L1均分 (已评${l1vals.length}项)</div>
+    </div>`;
+  });
+  summaryHtml += '</div>';
+  document.getElementById('eval-progress').innerHTML = summaryHtml;
 }
 
 // Init
