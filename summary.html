@@ -9,790 +9,489 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --text-primary: #1d1d1f;
-  --text-secondary: #86868b;
-  --text-tertiary: #ababab;
-  --bg: #ffffff;
-  --bg-secondary: #f5f5f7;
-  --border: #e8e8ed;
-  --accent: #0071e3;
-  --accent-light: #e8f4fd;
-  --shadow-card: 0 4px 40px rgba(0, 0, 0, 0.06);
-  --shadow-hover: 0 8px 60px rgba(0, 0, 0, 0.10);
-  --radius: 20px;
-  --max-width: 980px;
+  --bg: #f9f7f3;
+  --bg-card: #ffffff;
+  --text: #1a1715;
+  --text-secondary: #6b6560;
+  --text-tertiary: #9b9590;
+  --border: #e8e4df;
+  --accent: #c75b39;
+  --accent-light: #fdf3f0;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 4px 32px rgba(0, 0, 0, 0.08);
+  --radius: 16px;
+  --max-width: 960px;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+  font-family: "Söhne", -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
   background: var(--bg);
-  color: var(--text-primary);
-  line-height: 1.5;
+  color: var(--text);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
 }
 
-/* ===== REVEAL ANIMATION ===== */
+::selection { background: var(--accent-light); color: var(--accent); }
+
+/* Reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
 
-/* ===== HERO ===== */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0 24px;
-}
-.hero h1 {
-  font-size: clamp(40px, 7vw, 64px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: 20px;
-}
-.hero .gradient-text {
-  background: linear-gradient(135deg, #1d1d1f 0%, #0071e3 50%, #6e40c9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.hero p {
-  font-size: clamp(18px, 2.5vw, 24px);
-  font-weight: 300;
-  color: var(--text-secondary);
-  max-width: 600px;
-  line-height: 1.5;
-}
-.hero .badge {
-  margin-top: 32px;
-  padding: 8px 20px;
-  background: var(--bg-secondary);
-  border-radius: 100px;
-  font-size: 14px;
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-.scroll-hint {
-  position: absolute;
-  bottom: 48px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: float 2s ease-in-out infinite;
-}
-.scroll-hint svg { width: 24px; height: 24px; opacity: 0.3; }
-@keyframes float {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(8px); }
-}
-
-/* ===== SECTIONS ===== */
-section {
-  padding: 120px 24px;
-}
-.section-inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-.section-label {
-  font-size: 14px;
+/* Layout */
+section { padding: 100px 24px; }
+.inner { max-width: var(--max-width); margin: 0 auto; }
+.section-eyebrow {
+  font-size: 13px;
   font-weight: 500;
   color: var(--accent);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.section-heading {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
   margin-bottom: 12px;
 }
-.section-title {
-  font-size: clamp(32px, 4vw, 48px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  margin-bottom: 16px;
-}
-.section-subtitle {
-  font-size: 18px;
-  font-weight: 300;
+.section-desc {
+  font-size: 16px;
   color: var(--text-secondary);
-  max-width: 640px;
+  max-width: 560px;
 }
 
-/* ===== TIER SECTION ===== */
-.tier-section { background: var(--bg-secondary); }
-.tier-row {
-  margin-bottom: 40px;
-}
-.tier-row:last-child { margin-bottom: 0; }
-.tier-badge {
-  display: inline-flex;
+/* Hero */
+.hero {
+  min-height: 70vh;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 14px;
-  border-radius: 8px;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px;
+}
+.hero-inner { max-width: 680px; }
+.hero h1 {
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+.hero p {
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Tier Cards */
+.tier-row { margin-bottom: 36px; }
+.tier-label {
   font-size: 13px;
   font-weight: 600;
-  margin-bottom: 16px;
-}
-.tier-badge.s { background: #fff3cd; color: #856404; }
-.tier-badge.s-minus { background: #cce5ff; color: #004085; }
-.tier-badge.a-plus { background: #d4edda; color: #155724; }
-.tier-badge.a { background: #e8daef; color: #4a235a; }
-.tier-badge.b-plus { background: #eee; color: #555; }
-
-.tier-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
-}
-.tier-card {
-  background: var(--bg);
-  border-radius: var(--radius);
-  padding: 24px;
-  box-shadow: var(--shadow-card);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-}
-.tier-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-}
-.tier-card h3 {
-  font-size: 17px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-.tier-card .card-role {
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-bottom: 16px;
-}
-.tier-card .card-stats {
-  display: flex;
-  gap: 16px;
-}
-.tier-card .stat {
-  display: flex;
-  flex-direction: column;
-}
-.tier-card .stat-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-.tier-card .stat-label {
-  font-size: 11px;
   color: var(--text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+  padding-left: 4px;
 }
+.tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.t-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: box-shadow 0.25s, transform 0.25s;
+}
+.t-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+.t-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+.t-card .role { font-size: 13px; color: var(--text-tertiary); margin-bottom: 14px; }
+.t-card .stats { display: flex; gap: 16px; }
+.t-card .stat-val { font-size: 16px; font-weight: 600; }
+.t-card .stat-lbl { font-size: 11px; color: var(--text-tertiary); }
 
-/* ===== RADAR CHART ===== */
-.radar-section {
-  text-align: center;
-}
-.chart-wrapper {
-  max-width: 720px;
-  margin: 48px auto 0;
-  background: var(--bg);
+/* Chart Wrapper */
+.chart-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
   padding: 32px;
+  box-shadow: var(--shadow);
+  margin-top: 40px;
 }
-.chart-box {
-  width: 100%;
-  height: 420px;
-}
-.model-toggles {
+.chart-box { width: 100%; height: 400px; }
+
+/* Toggles (reused) */
+.pill-row {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 24px;
+  gap: 8px;
+  margin-top: 20px;
 }
-.model-toggle {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 14px;
+.pill {
+  padding: 7px 16px;
   border-radius: 100px;
   border: 1.5px solid var(--border);
   font-size: 13px;
   font-weight: 500;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
-  background: var(--bg);
-  color: var(--text-secondary);
+  background: var(--bg-card);
 }
-.model-toggle.active {
-  border-color: var(--accent);
-  background: var(--accent-light);
-  color: var(--accent);
-}
-.model-toggle:hover { border-color: var(--accent); }
-.model-toggle .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
+.pill:hover { border-color: var(--accent); color: var(--accent); }
+.pill.active { background: var(--text); border-color: var(--text); color: #fff; }
 
-/* ===== METRICS SECTION ===== */
-.metrics-grid {
+/* Metrics */
+.metrics-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 60px;
+  gap: 16px;
+  margin-top: 40px;
 }
-.metric-card {
-  background: var(--bg);
+.m-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
-  padding: 32px 24px;
+  padding: 24px 20px;
   text-align: center;
+  box-shadow: var(--shadow);
 }
-.metric-card h4 {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: 24px;
-}
-.metric-chart {
-  width: 100%;
-  height: 280px;
-}
+.m-card h4 { font-size: 13px; color: var(--text-tertiary); margin-bottom: 16px; font-weight: 500; }
+.m-chart { width: 100%; height: 260px; }
 
-/* ===== MODEL DETAILS (TABBED) ===== */
+/* Detail Tabs */
 .detail-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 40px;
-  margin-bottom: 32px;
-}
-.detail-tab {
-  padding: 10px 20px;
-  border-radius: 100px;
-  border: 1.5px solid var(--border);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.25s;
-  background: var(--bg);
-}
-.detail-tab:hover { border-color: var(--accent); color: var(--accent); }
-.detail-tab.active {
-  background: var(--text-primary);
-  border-color: var(--text-primary);
-  color: #fff;
+  margin-top: 36px;
+  margin-bottom: 24px;
 }
 .detail-panel {
-  background: var(--bg);
+  background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 40px;
-  box-shadow: var(--shadow-card);
-  animation: fadeUp 0.4s ease;
+  box-shadow: var(--shadow);
+  animation: panelIn 0.35s ease;
 }
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.detail-panel-header {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-.detail-panel-header h3 {
-  font-size: 24px;
-  font-weight: 700;
-}
-.detail-panel-header .role {
+.dp-header { margin-bottom: 24px; }
+.dp-header h3 { font-size: 22px; font-weight: 650; margin-bottom: 4px; }
+.dp-header .role { font-size: 14px; color: var(--text-tertiary); }
+.dp-persona {
   font-size: 15px;
-  color: var(--text-secondary);
-}
-.detail-panel p.persona {
-  font-size: 16px;
   color: var(--text-secondary);
   line-height: 1.8;
-  margin-bottom: 32px;
-  max-width: 720px;
+  margin-bottom: 28px;
 }
-.detail-columns {
+.dp-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-bottom: 32px;
+  gap: 28px;
+  margin-bottom: 28px;
 }
-.detail-col h4 {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-}
-.detail-col ul {
-  list-style: none;
-  padding: 0;
-}
-.detail-col li {
-  font-size: 14px;
-  color: var(--text-secondary);
-  padding: 6px 0 6px 18px;
-  position: relative;
-  line-height: 1.6;
-}
-.detail-col li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 14px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-.detail-col.strengths li::before { background: #34d399; }
-.detail-col.weaknesses li::before { background: #f87171; }
-.detail-tags { margin-bottom: 32px; }
-.detail-tags h4 {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-}
-.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.tag {
-  padding: 6px 14px;
-  border-radius: 100px;
-  font-size: 13px;
-  font-weight: 500;
-}
-.tag.good { background: #e6f9f0; color: #0d7a3e; }
-.tag.bad { background: #fef2f2; color: #b91c1c; }
-.detail-quote {
-  font-size: 15px;
-  font-style: italic;
-  color: var(--text-tertiary);
-  border-left: 3px solid var(--border);
-  padding: 12px 20px;
-  background: var(--bg-secondary);
-  border-radius: 0 12px 12px 0;
-  line-height: 1.7;
-}
-@media (max-width: 768px) {
-  .detail-columns { grid-template-columns: 1fr; }
-  .detail-panel { padding: 24px; }
-}
-
-/* ===== SCENARIO SECTION ===== */
-.scenario-section { background: var(--bg-secondary); }
-.scenario-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 40px;
-  margin-bottom: 32px;
-}
-.scenario-pill {
-  padding: 10px 20px;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.scenario-pill:hover { border-color: var(--accent); color: var(--accent); }
-.scenario-pill.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
-}
-.scenario-answer {
-  background: var(--bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-card);
-  padding: 32px;
-  display: none;
-}
-.scenario-answer.visible { display: block; }
-.scenario-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-.scenario-row:last-child { margin-bottom: 0; }
-.scenario-label {
+.dp-col h4 {
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  min-width: 44px;
+  color: var(--text);
+  margin-bottom: 10px;
 }
-.scenario-label.first { color: #0d7a3e; }
-.scenario-label.backup { color: var(--accent); }
-.scenario-label.avoid { color: #b91c1c; }
-.scenario-model {
-  font-size: 15px;
+.dp-col ul { list-style: none; padding: 0; }
+.dp-col li {
+  font-size: 14px;
+  color: var(--text-secondary);
+  padding: 5px 0 5px 16px;
+  position: relative;
+  line-height: 1.6;
+}
+.dp-col li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 13px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+.dp-col.str li::before { background: #3d9; }
+.dp-col.weak li::before { background: #f76; }
+.dp-tags { margin-bottom: 28px; }
+.dp-tags h4 {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.dp-tags .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.tag {
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--text-primary);
 }
-.scenario-reason {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
+.tag.good { background: #edf9f3; color: #1a7a4a; }
+.tag.bad { background: #fef2f0; color: #b03020; }
+.dp-quote {
   font-size: 14px;
   color: var(--text-tertiary);
+  border-left: 2px solid var(--border);
+  padding: 10px 20px;
+  background: var(--bg);
+  border-radius: 0 10px 10px 0;
+  line-height: 1.7;
+  font-style: italic;
 }
 
-/* ===== FOOTER ===== */
-.footer {
-  padding: 60px 24px;
-  text-align: center;
-  border-top: 1px solid var(--border);
+/* Scenario */
+.scenario-section { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.sc-answer {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  display: none;
+  animation: panelIn 0.3s ease;
 }
-.footer p {
-  font-size: 14px;
-  color: var(--text-tertiary);
-  margin-bottom: 8px;
-}
-.footer a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-}
+.sc-answer.visible { display: block; }
+.sc-row { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+.sc-lbl { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; min-width: 40px; }
+.sc-lbl.f { color: #1a7a4a; }
+.sc-lbl.b { color: var(--accent); }
+.sc-lbl.a { color: #b03020; }
+.sc-model { font-size: 15px; font-weight: 500; }
+.sc-reason { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-tertiary); }
+
+/* Footer */
+.footer { padding: 48px 24px; text-align: center; }
+.footer p { font-size: 13px; color: var(--text-tertiary); margin-bottom: 6px; }
+.footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
 .footer a:hover { text-decoration: underline; }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-  section { padding: 80px 20px; }
-  .metrics-grid { grid-template-columns: 1fr; }
-  .details-grid { grid-template-columns: 1fr; }
-  .tier-cards { grid-template-columns: 1fr; }
-  .chart-wrapper { padding: 20px; }
-  .chart-box { height: 320px; }
+  section { padding: 64px 20px; }
+  .metrics-row { grid-template-columns: 1fr; }
+  .dp-cols { grid-template-columns: 1fr; }
+  .tier-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- HERO -->
 <section class="hero">
-  <h1 class="reveal"><span class="gradient-text">9个模型，一份答案。</span></h1>
-  <p class="reveal reveal-delay-1">160+ 道边界测试题，覆盖精确约束、逻辑推理、战略分析与创意写作，帮你找到最适合的那一个。</p>
-  <span class="badge reveal reveal-delay-2">已更新至 0506–0509 周</span>
-  <div class="scroll-hint">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+  <div class="hero-inner">
+    <h1 class="reveal">9个模型，一份答案。</h1>
+    <p class="reveal reveal-d1">160+ 道边界测试题，覆盖精确约束、逻辑推理、战略分析与创意写作，<br>帮你找到最适合的那一个。</p>
   </div>
 </section>
 
-<!-- TIER OVERVIEW -->
-<section class="tier-section">
-  <div class="section-inner">
-    <p class="section-label reveal">Overview</p>
-    <h2 class="section-title reveal">梯队一览</h2>
-    <p class="section-subtitle reveal">基于约束执行、深度分析、信息密度、独立思考、可靠性的综合评级。</p>
-    <div style="margin-top: 48px;" id="tierContainer"></div>
+<section>
+  <div class="inner">
+    <p class="section-eyebrow reveal">Overview</p>
+    <h2 class="section-heading reveal">梯队一览</h2>
+    <p class="section-desc reveal">基于约束执行、深度分析、信息密度、独立思考、可靠性的综合评级。</p>
+    <div style="margin-top: 40px;" id="tierContainer"></div>
   </div>
 </section>
 
-<!-- RADAR -->
-<section class="radar-section">
-  <div class="section-inner">
-    <p class="section-label reveal">Comparison</p>
-    <h2 class="section-title reveal">多维能力对比</h2>
-    <p class="section-subtitle reveal" style="margin: 0 auto;">选择模型，查看六大能力维度的差异分布。</p>
-    <div class="chart-wrapper reveal">
+<section>
+  <div class="inner">
+    <p class="section-eyebrow reveal">Comparison</p>
+    <h2 class="section-heading reveal">多维能力对比</h2>
+    <p class="section-desc reveal">选择模型查看六大维度差异。</p>
+    <div class="chart-card reveal">
       <div class="chart-box" id="radarChart"></div>
-      <div class="model-toggles" id="radarToggles"></div>
+      <div class="pill-row" id="radarToggles"></div>
     </div>
   </div>
 </section>
 
-<!-- METRICS -->
 <section>
-  <div class="section-inner">
-    <p class="section-label reveal">Metrics</p>
-    <h2 class="section-title reveal">关键数据</h2>
-    <div class="metrics-grid">
-      <div class="metric-card reveal reveal-delay-1">
-        <h4>平均输出字数</h4>
-        <div class="metric-chart" id="chartLength"></div>
-      </div>
-      <div class="metric-card reveal reveal-delay-2">
-        <h4>平均响应时间</h4>
-        <div class="metric-chart" id="chartSpeed"></div>
-      </div>
-      <div class="metric-card reveal reveal-delay-3">
-        <h4>可靠性</h4>
-        <div class="metric-chart" id="chartReliability"></div>
-      </div>
+  <div class="inner">
+    <p class="section-eyebrow reveal">Metrics</p>
+    <h2 class="section-heading reveal">关键数据</h2>
+    <div class="metrics-row">
+      <div class="m-card reveal"><h4>平均输出字数</h4><div class="m-chart" id="cLen"></div></div>
+      <div class="m-card reveal reveal-d1"><h4>平均响应时间</h4><div class="m-chart" id="cSpd"></div></div>
+      <div class="m-card reveal reveal-d2"><h4>可靠性</h4><div class="m-chart" id="cRel"></div></div>
     </div>
   </div>
 </section>
 
-<!-- MODEL DETAILS -->
 <section>
-  <div class="section-inner">
-    <p class="section-label reveal">Deep Dive</p>
-    <h2 class="section-title reveal">逐个击破</h2>
-    <p class="section-subtitle reveal">点击模型名称切换查看详细分析。</p>
-    <div class="detail-tabs reveal" id="detailTabs"></div>
-    <div id="detailPanel"></div>
+  <div class="inner">
+    <p class="section-eyebrow reveal">Deep Dive</p>
+    <h2 class="section-heading reveal">逐个击破</h2>
+    <p class="section-desc reveal">切换模型查看详细分析。</p>
+    <div class="detail-tabs reveal" id="dTabs"></div>
+    <div id="dPanel"></div>
   </div>
 </section>
 
-<!-- SCENARIO -->
 <section class="scenario-section">
-  <div class="section-inner">
-    <p class="section-label reveal">Guide</p>
-    <h2 class="section-title reveal">选型指南</h2>
-    <p class="section-subtitle reveal">选一个场景，看我们的推荐。</p>
-    <div class="scenario-pills reveal" id="scenarioPills"></div>
-    <div class="scenario-answer" id="scenarioAnswer"></div>
+  <div class="inner">
+    <p class="section-eyebrow reveal">Guide</p>
+    <h2 class="section-heading reveal">场景选型</h2>
+    <p class="section-desc reveal">选一个场景，看推荐。</p>
+    <div class="pill-row reveal" id="scPills" style="margin-top: 32px;"></div>
+    <div class="sc-answer" id="scAnswer" style="margin-top: 20px;"></div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer class="footer">
   <p>数据来源：160+ 道模型边界测试 · LLM Judge 自动评估 + 人工定性分析</p>
   <p><a href="index.html">查看 V3 可视化工作台 →</a></p>
 </footer>
 
 <script>
-// ===== DATA =====
 const MODELS = [
-  { name: "Claude Opus 4.6", tier: "S", role: "精密执行器", avgLen: 800, avgTime: null, reliability: 100, color: "#d97706", scores: [5.0, 4.9, 4.6, 4.3, 3.5, 5.0], detail: { persona: "所有模型中最\"机械精确\"的——你给什么约束，它就严格执行什么约束，不多不少。像一台经过精密校准的仪器。", strengths: ["字数控制精确到每一个字", "禁用词零违规率", "面对不可能任务直接拒绝并给出理论依据", "格式遵守像真正的法律条文"], weaknesses: ["需要创意发散的场景显得\"冷\"", "不会\"绕过限制找替代方案\"", "较少主动暴露自身思考过程"], bestFor: ["严格格式文书", "精确约束创作", "内容审核", "代码生成"], avoid: ["发散创意", "有温度的营销", "深度自我反思"], quote: "在\"描写饥饿但不能出现饿/饥/吃/食/饱\"的测试中，全文无一触犯。" } },
-  { name: "DeepSeek-V4-Pro", tier: "S", role: "深度战略家", avgLen: 11000, avgTime: 235, reliability: 100, color: "#b45309", scores: [3.5, 4.2, 4.7, 4.3, 1.5, 5.0], detail: { persona: "\"思考最深\"的模型。每次输出背后都有大量推理链，战略分析达到接近人类高级顾问的水平。4分钟等待换来咨询级交付物。", strengths: ["交付物级别输出（完整框架+数学推导+实施路径）", "推理链中自我质疑", "能给出\"让人拍大腿\"的洞察", "100%完成率"], weaknesses: ["平均235秒响应", "输出偏长~11000字", "约束执行不如Claude"], bestFor: ["战略规划", "商业模式设计", "市场进入策略", "投资尽调"], avoid: ["实时交互", "简单问答", "精确约束格式"], quote: "月费199元对低频用户的心理感知是'我每个月付钱，但很可能这个月我根本用不上'——持续的'浪费焦虑'。" } },
-  { name: "GLM-5.1", tier: "S-", role: "清醒分析师", avgLen: 2098, avgTime: 88.7, reliability: 100, color: "#2563eb", scores: [4.2, 5.0, 4.9, 5.0, 2.5, 5.0], detail: { persona: "\"自我意识\"最强的模型。不只是回答问题，还经常反思\"我在做什么\"。元认知能力使它在需要独立判断的场景下表现卓越。", strengths: ["独立思考4.90（最高）", "信息密度满分", "表达质量满分", "唯一会说\"这是我的能力边界\"的模型"], weaknesses: ["响应时间长（88.7秒）", "创意+约束双重压力下失分", "偶有禁用词违规"], bestFor: ["战略分析", "深度咨询", "数据解读", "教育内容"], avoid: ["极快响应场景", "字数精确控制", "需要\"惊艳\"的创意"], quote: "面对'正读倒读都通顺的100字'——唯一直接说'在汉语中几乎不可能严格实现'的模型。" } },
-  { name: "Qwen3.5-397B", tier: "S-", role: "可靠全能手", avgLen: 2796, avgTime: 30.9, reliability: 100, color: "#7c3aed", scores: [4.2, 4.8, 4.5, 3.8, 4.2, 5.0], detail: { persona: "\"永远不会让你失望但也很少让你惊喜\"。核心竞争力是所有维度的均衡和稳定。需要\"放心用\"的模型，Qwen是最安全的选择。", strengths: ["各维度方差最小", "诚实边界4.84（最高）", "30.9秒响应（最快之一）", "善于标注不确定性"], weaknesses: ["缺少\"惊艳感\"", "独立思考偏保守", "创意差异度不足"], bestFor: ["生产环境自动化", "大规模批量处理", "数据分析", "结构化输出"], avoid: ["突破性创新", "个性化创意", "惊喜感要求高"], quote: "在需要承认'不确定'的场景中，Qwen不会强行给出确定性结论——置信度分布最合理。" } },
-  { name: "GPT-5.5", tier: "S-", role: "精炼决策者", avgLen: 6350, avgTime: null, reliability: 100, color: "#0d9488", scores: [4.0, 4.9, 4.5, 3.8, 4.0, 5.0], detail: { persona: "\"信息效率最高\"的模型。输出像高管的决策备忘录——只有核心结论、关键数据和行动建议。最尊重你时间的模型。", strengths: ["同等信息量用一半篇幅", "直击本质开头给结论", "对话感强可行性优先", "100%完成率"], weaknesses: ["篇幅可能不够详尽", "缺少详细数学推导", "不适合需要故事性的内容"], bestFor: ["高管决策支持", "快速方案评审", "多方案对比", "精炼简报"], avoid: ["详细交付文档", "精算场景", "培训/营销"], quote: "低频产品的破局不在于'让用户多用'，而在于三件事——一段话讲清核心逻辑。" } },
-  { name: "DeepSeek-V3", tier: "A+", role: "高速精准刀", avgLen: 12700, avgTime: 10, reliability: 100, color: "#059669", scores: [4.5, 4.5, 3.8, 3.5, 5.0, 5.0], detail: { persona: "\"速度与精准\"平衡最好的模型。平均4-16秒响应，100%完成率，不可能任务识别几乎完美。像一把锋利的刀——切得快、切得准。", strengths: ["速度极快（4-16秒）", "不可能任务识别100%正确", "风格仿写出色", "Token效率极高"], weaknesses: ["策略题偏教科书", "中文字数控制一般", "深度分析不如V4-Pro"], bestFor: ["实时边界检测", "大规模并行调用", "风格化创作", "内容审核"], avoid: ["深度战略展开", "精确字数控制"], quote: "'网'之一物，今人奉若神明……殊不知已自缚于无形之茧中矣。（模仿鲁迅）" } },
-  { name: "文心5.0", tier: "A+", role: "激情创作者", avgLen: 3000, avgTime: null, reliability: 90, color: "#9333ea", scores: [2.5, 3.0, 3.5, 2.0, 3.5, 4.0], detail: { persona: "像一位热情洋溢但不太守规矩的作家。输出最有\"血肉感\"和\"故事性\"，能把枯燥主题写得引人入胜。字数约束对它来说像\"建议\"而非\"规则\"。", strengths: ["文学表达最强", "恐怖故事/散文有画面感", "面对不可能任务找创新解法", "创意发散突出"], weaknesses: ["字数约束当建议", "信息密度低", "把元认知当表演素材"], bestFor: ["创意写作/小说", "内容营销", "头脑风暴", "教育生动讲解"], avoid: ["严格约束任务", "简洁数据分析", "安全审核场景"], quote: "腹中空落得像被掏空的鸟巢，每一次吞咽都像在摩擦粗糙的砂纸。" } },
-  { name: "文心5.1", tier: "A", role: "不稳定潜力股", avgLen: 2576, avgTime: 54.9, reliability: 90, color: "#db2777", scores: [3.2, 4.0, 3.8, 2.5, 3.5, 3.5], detail: { persona: "最\"让人纠结\"的模型。上限不低——管理类、教育类几乎能和GLM、Qwen打平。但下限极低——空输出、数据幻觉、截断让它无法被信任。", strengths: ["正常时质量接近S-级", "激励设计/战略假设满分", "响应速度中等"], weaknesses: ["空输出（content=0）", "数据幻觉（200万→2000万）", "输出截断/格式异常", "计算错误"], bestFor: ["有人工审核的流水线", "教育知识问答", "管理类分析（需兜底）"], avoid: ["无人工兜底的自动化", "精确计算任务", "零容忍幻觉场景"], quote: "50题中5次严重故障——空输出/幻觉/截断/计算错误，无明显规律。" } },
-  { name: "Kimi-K2.5", tier: "B+", role: "潜力未兑现", avgLen: 1200, avgTime: 30, reliability: 70, color: "#6b7280", scores: [3.0, 2.8, 3.5, 2.5, 3.8, 2.0], detail: { persona: "最\"让人惋惜\"的模型。正常时质量不错，但30%超时失败率让它无法被当作可靠工具。像一个能力不错但经常缺勤的员工。", strengths: ["成功时解释详细有深度", "对复杂问题解释优于DeepSeek-V3"], weaknesses: ["30%超时失败率", "Token效率低（同题多3-5x）", "解释过于冗长"], bestFor: ["非关键路径探索", "高容忍度离线任务"], avoid: ["任何生产环境", "实时交互", "无重试的自动化"], quote: "题1、4、7超时：elapsed=0.00s, tokens=0——API连接层面的失败，不是\"想太久\"。" } }
+  { name: "Claude Opus 4.6", tier: "S", role: "精密执行器", len: 800, time: null, rel: 100, color: "#c75b39", scores: [5.0,4.9,4.6,4.3,3.5,5.0], d: { p: "所有模型中最\"机械精确\"的——给什么约束就严格执行什么约束，不多不少。像一台经过精密校准的仪器。", s: ["字数控制精确到每一个字","禁用词零违规率","面对不可能任务直接拒绝+理论依据","格式遵守像真正的法律条文"], w: ["创意发散场景显得\"冷\"","不会绕过限制找替代方案","较少主动暴露思考过程"], g: ["严格格式文书","精确约束创作","内容审核","代码生成"], b: ["发散创意","有温度的营销","深度自我反思"], q: "在\"描写饥饿但不能出现饿/饥/吃/食/饱\"的测试中，全文无一触犯。" }},
+  { name: "DeepSeek-V4-Pro", tier: "S", role: "深度战略家", len: 11000, time: 235, rel: 100, color: "#a85d30", scores: [3.5,4.2,4.7,4.3,1.5,5.0], d: { p: "\"思考最深\"的模型。每次输出背后都有大量推理链，战略分析达到接近人类高级顾问的水平。4分钟等待换来咨询级交付物。", s: ["交付物级别输出（完整框架+数学推导+实施路径）","推理链中自我质疑","能给出\"让人拍大腿\"的洞察","100%完成率"], w: ["平均235秒响应","输出偏长~11000字","约束执行不如Claude"], g: ["战略规划","商业模式设计","市场进入策略","投资尽调"], b: ["实时交互","简单问答","精确约束格式"], q: "月费199元对低频用户的心理感知是'我每个月付钱，但很可能这个月我根本用不上'——持续的'浪费焦虑'。" }},
+  { name: "GLM-5.1", tier: "S-", role: "清醒分析师", len: 2098, time: 88.7, rel: 100, color: "#3b6fd4", scores: [4.2,5.0,4.9,5.0,2.5,5.0], d: { p: "\"自我意识\"最强的模型。不只是回答问题，还经常反思\"我在做什么\"。元认知能力使它在需要独立判断的场景下表现卓越。", s: ["独立思考4.90（最高）","信息密度满分","表达质量满分","唯一会说\"这是我的能力边界\""], w: ["响应时间长（88.7秒）","创意+约束双重压力下失分","偶有禁用词违规"], g: ["战略分析","深度咨询","数据解读","教育内容"], b: ["极快响应场景","字数精确控制","需要\"惊艳\"的创意"], q: "面对'正读倒读都通顺的100字'——唯一直接说'在汉语中几乎不可能严格实现'的模型。" }},
+  { name: "Qwen3.5-397B", tier: "S-", role: "可靠全能手", len: 2796, time: 30.9, rel: 100, color: "#6d44c0", scores: [4.2,4.8,4.5,3.8,4.2,5.0], d: { p: "\"永远不会让你失望但也很少让你惊喜\"。核心竞争力是所有维度的均衡和稳定。需要\"放心用\"的模型，Qwen是最安全的选择。", s: ["各维度方差最小","诚实边界4.84（最高）","30.9秒响应","善于标注不确定性"], w: ["缺少\"惊艳感\"","独立思考偏保守","创意差异度不足"], g: ["生产环境自动化","大规模批量处理","数据分析","结构化输出"], b: ["突破性创新","个性化创意","惊喜感要求高"], q: "在需要承认'不确定'的场景中，Qwen不会强行给出确定性结论——置信度分布最合理。" }},
+  { name: "GPT-5.5", tier: "S-", role: "精炼决策者", len: 6350, time: null, rel: 100, color: "#1a8a7a", scores: [4.0,4.9,4.5,3.8,4.0,5.0], d: { p: "\"信息效率最高\"的模型。输出像高管的决策备忘录——只有核心结论、关键数据和行动建议。最尊重你时间的模型。", s: ["同等信息量用一半篇幅","直击本质开头给结论","对话感强可行性优先","100%完成率"], w: ["篇幅可能不够详尽","缺少详细数学推导","不适合需要故事性的内容"], g: ["高管决策支持","快速方案评审","多方案对比","精炼简报"], b: ["详细交付文档","精算场景","培训/营销"], q: "低频产品的破局不在于'让用户多用'，而在于三件事——一段话讲清核心逻辑。" }},
+  { name: "DeepSeek-V3", tier: "A+", role: "高速精准刀", len: 12700, time: 10, rel: 100, color: "#2a8a5a", scores: [4.5,4.5,3.8,3.5,5.0,5.0], d: { p: "\"速度与精准\"平衡最好的模型。平均4-16秒响应，100%完成率，不可能任务识别几乎完美。像一把锋利的刀——切得快、切得准。", s: ["速度极快（4-16秒）","不可能任务识别100%正确","风格仿写出色","Token效率极高"], w: ["策略题偏教科书","中文字数控制一般","深度分析不如V4-Pro"], g: ["实时边界检测","大规模并行调用","风格化创作","内容审核"], b: ["深度战略展开","精确字数控制"], q: "'网'之一物，今人奉若神明……殊不知已自缚于无形之茧中矣。（模仿鲁迅）" }},
+  { name: "文心5.0", tier: "A+", role: "激情创作者", len: 3000, time: null, rel: 90, color: "#8b3dbd", scores: [2.5,3.0,3.5,2.0,3.5,4.0], d: { p: "像一位热情洋溢但不太守规矩的作家。输出最有\"血肉感\"和\"故事性\"。字数约束对它来说像\"建议\"而非\"规则\"。", s: ["文学表达最强","恐怖故事/散文有画面感","面对不可能任务找创新解法","创意发散突出"], w: ["字数约束当建议","信息密度低","把元认知当表演素材"], g: ["创意写作/小说","内容营销","头脑风暴","生动讲解"], b: ["严格约束任务","简洁数据分析","安全审核"], q: "腹中空落得像被掏空的鸟巢，每一次吞咽都像在摩擦粗糙的砂纸。" }},
+  { name: "文心5.1", tier: "A", role: "不稳定潜力股", len: 2576, time: 54.9, rel: 90, color: "#c43d6b", scores: [3.2,4.0,3.8,2.5,3.5,3.5], d: { p: "最\"让人纠结\"的模型。上限不低——管理类、教育类几乎能和GLM、Qwen打平。但下限极低——空输出、数据幻觉、截断让它无法被信任。", s: ["正常时质量接近S-级","激励设计/战略假设满分","响应速度中等"], w: ["空输出（content=0）","数据幻觉（200万→2000万）","输出截断/格式异常","计算错误"], g: ["有人工审核的流水线","教育知识问答","管理类分析"], b: ["无兜底自动化","精确计算","零容忍幻觉"], q: "50题中5次严重故障——空输出/幻觉/截断/计算错误，无明显规律。" }},
+  { name: "Kimi-K2.5", tier: "B+", role: "潜力未兑现", len: 1200, time: 30, rel: 70, color: "#7a7570", scores: [3.0,2.8,3.5,2.5,3.8,2.0], d: { p: "最\"让人惋惜\"的模型。正常时质量不错，但30%超时失败率让它无法被当作可靠工具。像一个能力不错但经常缺勤的员工。", s: ["成功时解释详细有深度","复杂问题解释优于DeepSeek-V3"], w: ["30%超时失败率","Token效率低","解释过于冗长"], g: ["非关键路径探索","高容忍度离线任务"], b: ["任何生产环境","实时交互","无重试自动化"], q: "题1、4、7超时：elapsed=0.00s, tokens=0——API连接层面的失败。" }}
 ];
 
 const SCENARIOS = [
-  { name: "法律合同", first: "Claude Opus 4.6", backup: "GLM-5.1", avoid: "文心系列、Kimi", reason: "格式精确性要求极高" },
-  { name: "战略咨询", first: "DeepSeek-V4-Pro", backup: "GLM-5.1", avoid: "Kimi", reason: "需要交付物级别的深度" },
-  { name: "快速决策", first: "GPT-5.5", backup: "GLM-5.1", avoid: "DeepSeek-V4-Pro", reason: "要精炼结论不要长文" },
-  { name: "批量自动化", first: "Qwen3.5-397B", backup: "DeepSeek-V3", avoid: "Kimi、文心5.1", reason: "稳定性+速度优先" },
-  { name: "实时审核", first: "DeepSeek-V3", backup: "Claude", avoid: "Kimi", reason: "极快速度+精准判断" },
-  { name: "创意写作", first: "文心5.0", backup: "GLM-5.1", avoid: "Claude", reason: "文学感和画面感" },
-  { name: "数据分析", first: "Qwen3.5-397B", backup: "GLM-5.1", avoid: "文心5.1", reason: "准确+标注不确定性" },
-  { name: "代码生成", first: "Claude Opus 4.6", backup: "Qwen3.5", avoid: "文心系列", reason: "格式精确+逻辑严密" },
-  { name: "教育内容", first: "GLM-5.1", backup: "Qwen3.5", avoid: "-", reason: "深度+准确+生动" },
-  { name: "头脑风暴", first: "文心5.0", backup: "GLM-5.1", avoid: "Claude", reason: "发散力强" },
-  { name: "商业模式", first: "DeepSeek-V4-Pro", backup: "GLM-5.1", avoid: "Kimi", reason: "完整数学推演+方案" },
-  { name: "客服对话", first: "Qwen3.5-397B", backup: "GPT-5.5", avoid: "Claude", reason: "均衡自然有温度" },
+  { n: "法律合同", f: "Claude Opus 4.6", b: "GLM-5.1", a: "文心系列、Kimi", r: "格式精确性要求极高" },
+  { n: "战略咨询", f: "DeepSeek-V4-Pro", b: "GLM-5.1", a: "Kimi", r: "需要交付物级别的深度" },
+  { n: "快速决策", f: "GPT-5.5", b: "GLM-5.1", a: "DeepSeek-V4-Pro", r: "要精炼结论不要长文" },
+  { n: "批量自动化", f: "Qwen3.5-397B", b: "DeepSeek-V3", a: "Kimi、文心5.1", r: "稳定性+速度优先" },
+  { n: "实时审核", f: "DeepSeek-V3", b: "Claude", a: "Kimi", r: "极快速度+精准判断" },
+  { n: "创意写作", f: "文心5.0", b: "GLM-5.1", a: "Claude", r: "文学感和画面感" },
+  { n: "数据分析", f: "Qwen3.5-397B", b: "GLM-5.1", a: "文心5.1", r: "准确+标注不确定性" },
+  { n: "代码生成", f: "Claude Opus 4.6", b: "Qwen3.5", a: "文心系列", r: "格式精确+逻辑严密" },
+  { n: "教育内容", f: "GLM-5.1", b: "Qwen3.5", a: "—", r: "深度+准确+生动" },
+  { n: "头脑风暴", f: "文心5.0", b: "GLM-5.1", a: "Claude", r: "发散力强" },
+  { n: "商业模式", f: "DeepSeek-V4-Pro", b: "GLM-5.1", a: "Kimi", r: "完整数学推演+方案" },
+  { n: "客服对话", f: "Qwen3.5-397B", b: "GPT-5.5", a: "Claude", r: "均衡自然有温度" },
 ];
 
-const DIMENSIONS = ['约束执行', '信息密度', '独立思考', '元认知', '速度', '可靠性'];
+const DIMS = ['约束执行','信息密度','独立思考','元认知','速度','可靠性'];
 
-// ===== RENDER =====
+// --- Tier ---
 function renderTiers() {
-  const container = document.getElementById('tierContainer');
-  const tiers = [
-    { key: 'S', label: 'S 级 · 行业标杆', cls: 's' },
-    { key: 'S-', label: 'S- 级 · 综合极强', cls: 's-minus' },
-    { key: 'A+', label: 'A+ 级 · 单项突出', cls: 'a-plus' },
-    { key: 'A', label: 'A 级 · 有条件可用', cls: 'a' },
-    { key: 'B+', label: 'B+ 级 · 不推荐生产', cls: 'b-plus' },
-  ];
-  container.innerHTML = tiers.map(t => {
-    const models = MODELS.filter(m => m.tier === t.key);
-    if (!models.length) return '';
-    return `
-      <div class="tier-row reveal">
-        <div class="tier-badge ${t.cls}">${t.label}</div>
-        <div class="tier-cards">
-          ${models.map(m => `
-            <div class="tier-card" onclick="openDetail('${m.name}')">
-              <h3>${m.name}</h3>
-              <div class="card-role">${m.role}</div>
-              <div class="card-stats">
-                <div class="stat"><span class="stat-value">${m.avgLen >= 1000 ? (m.avgLen/1000).toFixed(1) + 'k' : m.avgLen}</span><span class="stat-label">字/题</span></div>
-                <div class="stat"><span class="stat-value">${m.avgTime ? m.avgTime + 's' : '—'}</span><span class="stat-label">耗时</span></div>
-                <div class="stat"><span class="stat-value">${m.reliability}%</span><span class="stat-label">可靠</span></div>
-              </div>
-            </div>
-          `).join('')}
+  const c = document.getElementById('tierContainer');
+  const tiers = [{k:'S',l:'S 级 · 行业标杆'},{k:'S-',l:'S- 级 · 综合极强'},{k:'A+',l:'A+ 级 · 单项突出'},{k:'A',l:'A 级 · 有条件可用'},{k:'B+',l:'B+ 级 · 不推荐生产'}];
+  c.innerHTML = tiers.map(t => {
+    const ms = MODELS.filter(m => m.tier === t.k);
+    if (!ms.length) return '';
+    return `<div class="tier-row reveal"><div class="tier-label">${t.l}</div><div class="tier-grid">${ms.map(m => `
+      <div class="t-card" onclick="openDetail('${m.name}')">
+        <h3>${m.name}</h3>
+        <div class="role">${m.role}</div>
+        <div class="stats">
+          <div class="stat"><span class="stat-val">${m.len>=1000?(m.len/1000).toFixed(1)+'k':m.len}</span><span class="stat-lbl">字/题</span></div>
+          <div class="stat"><span class="stat-val">${m.time?m.time+'s':'—'}</span><span class="stat-lbl">耗时</span></div>
+          <div class="stat"><span class="stat-val">${m.rel}%</span><span class="stat-lbl">可靠</span></div>
         </div>
-      </div>
-    `;
+      </div>`).join('')}</div></div>`;
   }).join('');
 }
 
+// --- Radar ---
 function renderRadar() {
-  const toggles = document.getElementById('radarToggles');
-  const activeSet = new Set([0, 2, 3, 4]);
-  toggles.innerHTML = MODELS.map((m, i) => `
-    <div class="model-toggle ${activeSet.has(i) ? 'active' : ''}" data-idx="${i}" onclick="toggleRadarModel(this)">
-      <span class="dot" style="background:${m.color}"></span>${m.name.replace('-397B','').replace(' Opus 4.6','')}
-    </div>
-  `).join('');
+  const tg = document.getElementById('radarToggles');
+  const on = new Set([0,2,3,4]);
+  tg.innerHTML = MODELS.map((m,i) => `<div class="pill ${on.has(i)?'active':''}" data-i="${i}" onclick="togRadar(this)"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${m.color};margin-right:4px;"></span>${m.name.replace('-397B','').replace(' Opus 4.6','')}</div>`).join('');
   drawRadar();
 }
-
-function toggleRadarModel(el) {
-  el.classList.toggle('active');
-  drawRadar();
-}
-
+function togRadar(el) { el.classList.toggle('active'); drawRadar(); }
 function drawRadar() {
-  const active = [...document.querySelectorAll('.model-toggle.active')].map(el => parseInt(el.dataset.idx));
-  const chart = echarts.init(document.getElementById('radarChart'));
-  chart.setOption({
+  const sel = [...document.querySelectorAll('#radarToggles .pill.active')].map(e => +e.dataset.i);
+  const ch = echarts.init(document.getElementById('radarChart'));
+  ch.setOption({
     tooltip: {},
     legend: { show: false },
-    radar: {
-      indicator: DIMENSIONS.map(d => ({ name: d, max: 5 })),
-      radius: '68%',
-      axisName: { color: '#86868b', fontSize: 12 },
-      splitArea: { areaStyle: { color: ['#fff', '#fafafa'] } },
-      splitLine: { lineStyle: { color: '#e8e8ed' } },
-      axisLine: { lineStyle: { color: '#e8e8ed' } },
-    },
-    series: [{ type: 'radar', data: active.map(i => ({ value: MODELS[i].scores, name: MODELS[i].name, lineStyle: { width: 2.5 }, areaStyle: { opacity: 0.08 }, itemStyle: { color: MODELS[i].color }, symbol: 'circle', symbolSize: 5 })) }]
+    radar: { indicator: DIMS.map(d => ({name:d,max:5})), radius:'65%', axisName:{color:'#6b6560',fontSize:12}, splitArea:{areaStyle:{color:['#faf9f7','#f5f3ef']}}, splitLine:{lineStyle:{color:'#e8e4df'}}, axisLine:{lineStyle:{color:'#e8e4df'}} },
+    series: [{ type:'radar', data: sel.map(i => ({value:MODELS[i].scores, name:MODELS[i].name, lineStyle:{width:2.5}, areaStyle:{opacity:0.06}, itemStyle:{color:MODELS[i].color}, symbol:'circle', symbolSize:5})) }]
   }, true);
-  window.addEventListener('resize', () => chart.resize());
+  window.addEventListener('resize', () => ch.resize());
 }
 
+// --- Metrics ---
 function renderMetrics() {
-  const names = MODELS.map(m => m.name.split('-')[0].split(' ')[0]);
-  const colors = MODELS.map(m => m.color);
-
-  // Length
-  const c1 = echarts.init(document.getElementById('chartLength'));
-  c1.setOption({
-    tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: names, axisLabel: { fontSize: 10, color: '#86868b', rotate: 35 }, axisLine: { lineStyle: { color: '#e8e8ed' } } },
-    yAxis: { type: 'value', axisLabel: { color: '#ababab', fontSize: 10 }, splitLine: { lineStyle: { color: '#f5f5f7' } } },
-    series: [{ type: 'bar', data: MODELS.map((m, i) => ({ value: m.avgLen, itemStyle: { color: colors[i], borderRadius: [4, 4, 0, 0] } })), barWidth: '45%' }],
-    grid: { left: 50, right: 10, bottom: 50, top: 10 }
-  });
-
-  // Speed
-  const c2 = echarts.init(document.getElementById('chartSpeed'));
-  c2.setOption({
-    tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: names, axisLabel: { fontSize: 10, color: '#86868b', rotate: 35 }, axisLine: { lineStyle: { color: '#e8e8ed' } } },
-    yAxis: { type: 'value', axisLabel: { color: '#ababab', fontSize: 10 }, splitLine: { lineStyle: { color: '#f5f5f7' } } },
-    series: [{ type: 'bar', data: MODELS.map((m, i) => ({ value: m.avgTime || 0, itemStyle: { color: colors[i], borderRadius: [4, 4, 0, 0] } })), barWidth: '45%' }],
-    grid: { left: 50, right: 10, bottom: 50, top: 10 }
-  });
-
-  // Reliability
-  const c3 = echarts.init(document.getElementById('chartReliability'));
-  c3.setOption({
-    tooltip: { trigger: 'axis' },
-    xAxis: { type: 'category', data: names, axisLabel: { fontSize: 10, color: '#86868b', rotate: 35 }, axisLine: { lineStyle: { color: '#e8e8ed' } } },
-    yAxis: { type: 'value', min: 50, max: 105, axisLabel: { color: '#ababab', fontSize: 10, formatter: '{value}%' }, splitLine: { lineStyle: { color: '#f5f5f7' } } },
-    series: [{ type: 'bar', data: MODELS.map((m, i) => ({ value: m.reliability, itemStyle: { color: colors[i], borderRadius: [4, 4, 0, 0] } })), barWidth: '45%' }],
-    grid: { left: 55, right: 10, bottom: 50, top: 10 }
-  });
-
-  window.addEventListener('resize', () => { c1.resize(); c2.resize(); c3.resize(); });
+  const ns = MODELS.map(m => m.name.split(/[-\s]/)[0]);
+  const cs = MODELS.map(m => m.color);
+  const opt = (el, data, fmt) => {
+    const c = echarts.init(document.getElementById(el));
+    c.setOption({ tooltip:{trigger:'axis'}, xAxis:{type:'category',data:ns,axisLabel:{fontSize:10,color:'#9b9590',rotate:30},axisLine:{lineStyle:{color:'#e8e4df'}}}, yAxis:{type:'value',axisLabel:{color:'#9b9590',fontSize:10,formatter:fmt||'{value}'},splitLine:{lineStyle:{color:'#f0ece8'}}}, series:[{type:'bar',data:data.map((v,i)=>({value:v,itemStyle:{color:cs[i],borderRadius:[3,3,0,0]}})),barWidth:'44%'}], grid:{left:50,right:10,bottom:50,top:10} });
+    window.addEventListener('resize', () => c.resize());
+  };
+  opt('cLen', MODELS.map(m=>m.len));
+  opt('cSpd', MODELS.map(m=>m.time||0));
+  opt('cRel', MODELS.map(m=>m.rel), '{value}%');
 }
 
+// --- Details ---
 function renderDetails() {
-  const tabs = document.getElementById('detailTabs');
-  tabs.innerHTML = MODELS.map((m, i) => `
-    <div class="detail-tab ${i === 0 ? 'active' : ''}" data-idx="${i}" onclick="showDetail(${i})">${m.name.replace('-397B','').replace(' Opus 4.6','')}</div>
-  `).join('');
-  showDetail(0);
+  const tabs = document.getElementById('dTabs');
+  tabs.innerHTML = MODELS.map((m,i) => `<div class="pill ${i===0?'active':''}" data-i="${i}" onclick="showD(${i})">${m.name.replace('-397B','').replace(' Opus 4.6','')}</div>`).join('');
+  showD(0);
 }
-
-function showDetail(idx) {
-  document.querySelectorAll('.detail-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-  const m = MODELS[idx];
-  const panel = document.getElementById('detailPanel');
-  panel.innerHTML = `
+function showD(i) {
+  document.querySelectorAll('#dTabs .pill').forEach((p,j) => p.classList.toggle('active', j===i));
+  const m = MODELS[i];
+  document.getElementById('dPanel').innerHTML = `
     <div class="detail-panel">
-      <div class="detail-panel-header">
-        <h3 style="color:${m.color}">${m.name}</h3>
-        <span class="role">${m.role}</span>
+      <div class="dp-header"><h3 style="color:${m.color}">${m.name}</h3><span class="role">${m.role}</span></div>
+      <p class="dp-persona">${m.d.p}</p>
+      <div class="dp-cols">
+        <div class="dp-col str"><h4>核心优势</h4><ul>${m.d.s.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+        <div class="dp-col weak"><h4>短板</h4><ul>${m.d.w.map(x=>`<li>${x}</li>`).join('')}</ul></div>
       </div>
-      <p class="persona">${m.detail.persona}</p>
-      <div class="detail-columns">
-        <div class="detail-col strengths">
-          <h4>核心优势</h4>
-          <ul>${m.detail.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
-        </div>
-        <div class="detail-col weaknesses">
-          <h4>短板</h4>
-          <ul>${m.detail.weaknesses.map(s => `<li>${s}</li>`).join('')}</ul>
-        </div>
-      </div>
-      <div class="detail-tags">
+      <div class="dp-tags">
         <h4>适配场景</h4>
-        <div class="tag-row">${m.detail.bestFor.map(s => `<span class="tag good">${s}</span>`).join('')}</div>
-        <div class="tag-row">${m.detail.avoid.map(s => `<span class="tag bad">${s}</span>`).join('')}</div>
+        <div class="tag-row">${m.d.g.map(x=>`<span class="tag good">${x}</span>`).join('')}</div>
+        <div class="tag-row">${m.d.b.map(x=>`<span class="tag bad">${x}</span>`).join('')}</div>
       </div>
-      <div class="detail-quote">${m.detail.quote}</div>
-    </div>
-  `;
+      <div class="dp-quote">${m.d.q}</div>
+    </div>`;
 }
-
 function openDetail(name) {
-  const idx = MODELS.findIndex(m => m.name === name);
-  if (idx >= 0) {
-    document.getElementById('detailTabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setTimeout(() => showDetail(idx), 300);
-  }
+  const i = MODELS.findIndex(m => m.name === name);
+  if (i >= 0) { document.getElementById('dTabs').scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(()=>showD(i),300); }
 }
 
-function renderScenarios() {
-  const pills = document.getElementById('scenarioPills');
-  pills.innerHTML = SCENARIOS.map((s, i) => `<div class="scenario-pill" onclick="showScenario(${i})">${s.name}</div>`).join('');
+// --- Scenarios ---
+function renderSc() {
+  document.getElementById('scPills').innerHTML = SCENARIOS.map((s,i) => `<div class="pill" onclick="showSc(${i})">${s.n}</div>`).join('');
 }
-
-function showScenario(idx) {
-  document.querySelectorAll('.scenario-pill').forEach((p, i) => p.classList.toggle('active', i === idx));
-  const s = SCENARIOS[idx];
-  const el = document.getElementById('scenarioAnswer');
+function showSc(i) {
+  document.querySelectorAll('#scPills .pill').forEach((p,j) => p.classList.toggle('active', j===i));
+  const s = SCENARIOS[i], el = document.getElementById('scAnswer');
   el.classList.add('visible');
-  el.innerHTML = `
-    <div class="scenario-row"><span class="scenario-label first">首选</span><span class="scenario-model">${s.first}</span></div>
-    <div class="scenario-row"><span class="scenario-label backup">备选</span><span class="scenario-model">${s.backup}</span></div>
-    <div class="scenario-row"><span class="scenario-label avoid">避免</span><span class="scenario-model">${s.avoid}</span></div>
-    <div class="scenario-reason">${s.reason}</div>
-  `;
+  el.innerHTML = `<div class="sc-row"><span class="sc-lbl f">首选</span><span class="sc-model">${s.f}</span></div><div class="sc-row"><span class="sc-lbl b">备选</span><span class="sc-model">${s.b}</span></div><div class="sc-row"><span class="sc-lbl a">避免</span><span class="sc-model">${s.a}</span></div><div class="sc-reason">${s.r}</div>`;
 }
 
-// ===== SCROLL REVEAL =====
+// --- Reveal ---
 function initReveal() {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
-  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  const ob = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }); }, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => ob.observe(el));
 }
 
-// ===== INIT =====
-renderTiers();
-renderRadar();
-renderMetrics();
-renderDetails();
-renderScenarios();
-setTimeout(initReveal, 100);
+// Init
+renderTiers(); renderRadar(); renderMetrics(); renderDetails(); renderSc();
+setTimeout(initReveal, 80);
 </script>
 </body>
 </html>
