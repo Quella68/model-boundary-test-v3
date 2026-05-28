@@ -271,106 +271,131 @@ section {
   height: 280px;
 }
 
-/* ===== MODEL DETAILS ===== */
-.details-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
-  gap: 20px;
-  margin-top: 48px;
+/* ===== MODEL DETAILS (TABBED) ===== */
+.detail-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 40px;
+  margin-bottom: 32px;
 }
-.detail-card {
+.detail-tab {
+  padding: 10px 20px;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.25s;
+  background: var(--bg);
+}
+.detail-tab:hover { border-color: var(--accent); color: var(--accent); }
+.detail-tab.active {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: #fff;
+}
+.detail-panel {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;
-  transition: box-shadow 0.3s;
+  padding: 40px;
+  box-shadow: var(--shadow-card);
+  animation: fadeUp 0.4s ease;
 }
-.detail-card:hover { box-shadow: var(--shadow-hover); }
-.detail-header {
-  padding: 24px 28px;
-  cursor: pointer;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.detail-panel-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
 }
-.detail-header-left h3 {
-  font-size: 17px;
-  font-weight: 600;
-  margin-bottom: 2px;
+.detail-panel-header h3 {
+  font-size: 24px;
+  font-weight: 700;
 }
-.detail-header-left .role {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-.detail-arrow {
-  width: 20px;
-  height: 20px;
-  transition: transform 0.3s;
-  color: var(--text-tertiary);
-}
-.detail-card.open .detail-arrow { transform: rotate(180deg); }
-.detail-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.detail-card.open .detail-body { max-height: 2000px; }
-.detail-content {
-  padding: 0 28px 28px;
-  border-top: 1px solid var(--border);
-  padding-top: 24px;
-}
-.detail-content p {
+.detail-panel-header .role {
   font-size: 15px;
   color: var(--text-secondary);
-  line-height: 1.7;
-  margin-bottom: 20px;
 }
-.detail-content h4 {
-  font-size: 13px;
+.detail-panel p.persona {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 32px;
+  max-width: 720px;
+}
+.detail-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.detail-col h4 {
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
   color: var(--text-primary);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
-.detail-content ul {
+.detail-col ul {
   list-style: none;
   padding: 0;
-  margin-bottom: 20px;
 }
-.detail-content li {
+.detail-col li {
   font-size: 14px;
   color: var(--text-secondary);
-  padding: 4px 0 4px 16px;
+  padding: 6px 0 6px 18px;
   position: relative;
+  line-height: 1.6;
 }
-.detail-content li::before {
+.detail-col li::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 12px;
+  top: 14px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--border);
 }
-.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.tag {
-  padding: 4px 12px;
-  border-radius: 100px;
+.detail-col.strengths li::before { background: #34d399; }
+.detail-col.weaknesses li::before { background: #f87171; }
+.detail-tags { margin-bottom: 32px; }
+.detail-tags h4 {
   font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.tag {
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 13px;
   font-weight: 500;
 }
 .tag.good { background: #e6f9f0; color: #0d7a3e; }
 .tag.bad { background: #fef2f2; color: #b91c1c; }
 .detail-quote {
-  font-size: 14px;
+  font-size: 15px;
   font-style: italic;
   color: var(--text-tertiary);
   border-left: 3px solid var(--border);
-  padding-left: 16px;
-  margin-top: 16px;
+  padding: 12px 20px;
+  background: var(--bg-secondary);
+  border-radius: 0 12px 12px 0;
+  line-height: 1.7;
+}
+@media (max-width: 768px) {
+  .detail-columns { grid-template-columns: 1fr; }
+  .detail-panel { padding: 24px; }
 }
 
 /* ===== SCENARIO SECTION ===== */
@@ -528,8 +553,9 @@ section {
   <div class="section-inner">
     <p class="section-label reveal">Deep Dive</p>
     <h2 class="section-title reveal">逐个击破</h2>
-    <p class="section-subtitle reveal">点击展开查看每个模型的性格画像与最佳适配场景。</p>
-    <div class="details-grid" id="detailsGrid"></div>
+    <p class="section-subtitle reveal">点击模型名称切换查看详细分析。</p>
+    <div class="detail-tabs reveal" id="detailTabs"></div>
+    <div id="detailPanel"></div>
   </div>
 </section>
 
@@ -688,38 +714,50 @@ function renderMetrics() {
 }
 
 function renderDetails() {
-  const grid = document.getElementById('detailsGrid');
-  grid.innerHTML = MODELS.map((m, i) => `
-    <div class="detail-card reveal" id="detail-${i}">
-      <div class="detail-header" onclick="this.parentElement.classList.toggle('open')">
-        <div class="detail-header-left">
-          <h3 style="color:${m.color}">${m.name}</h3>
-          <span class="role">${m.role}</span>
-        </div>
-        <svg class="detail-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+  const tabs = document.getElementById('detailTabs');
+  tabs.innerHTML = MODELS.map((m, i) => `
+    <div class="detail-tab ${i === 0 ? 'active' : ''}" data-idx="${i}" onclick="showDetail(${i})">${m.name.replace('-397B','').replace(' Opus 4.6','')}</div>
+  `).join('');
+  showDetail(0);
+}
+
+function showDetail(idx) {
+  document.querySelectorAll('.detail-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+  const m = MODELS[idx];
+  const panel = document.getElementById('detailPanel');
+  panel.innerHTML = `
+    <div class="detail-panel">
+      <div class="detail-panel-header">
+        <h3 style="color:${m.color}">${m.name}</h3>
+        <span class="role">${m.role}</span>
       </div>
-      <div class="detail-body">
-        <div class="detail-content">
-          <p>${m.detail.persona}</p>
+      <p class="persona">${m.detail.persona}</p>
+      <div class="detail-columns">
+        <div class="detail-col strengths">
           <h4>核心优势</h4>
           <ul>${m.detail.strengths.map(s => `<li>${s}</li>`).join('')}</ul>
+        </div>
+        <div class="detail-col weaknesses">
           <h4>短板</h4>
           <ul>${m.detail.weaknesses.map(s => `<li>${s}</li>`).join('')}</ul>
-          <h4>最适合</h4>
-          <div class="tag-row">${m.detail.bestFor.map(s => `<span class="tag good">${s}</span>`).join('')}</div>
-          <h4>不适合</h4>
-          <div class="tag-row">${m.detail.avoid.map(s => `<span class="tag bad">${s}</span>`).join('')}</div>
-          <div class="detail-quote">"${m.detail.quote}"</div>
         </div>
       </div>
+      <div class="detail-tags">
+        <h4>适配场景</h4>
+        <div class="tag-row">${m.detail.bestFor.map(s => `<span class="tag good">${s}</span>`).join('')}</div>
+        <div class="tag-row">${m.detail.avoid.map(s => `<span class="tag bad">${s}</span>`).join('')}</div>
+      </div>
+      <div class="detail-quote">${m.detail.quote}</div>
     </div>
-  `).join('');
+  `;
 }
 
 function openDetail(name) {
   const idx = MODELS.findIndex(m => m.name === name);
-  const el = document.getElementById('detail-' + idx);
-  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); setTimeout(() => el.classList.add('open'), 400); }
+  if (idx >= 0) {
+    document.getElementById('detailTabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => showDetail(idx), 300);
+  }
 }
 
 function renderScenarios() {
